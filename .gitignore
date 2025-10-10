@@ -1,0 +1,30 @@
+.*
+*~
+!.gitignore
+
+# Model checkpoints
+wandb/*
+logs/*
+checkpoints/*
+*.wandb
+*.log
+*.err
+*.out
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# CSV files
+*.csv
+
+# SLURM sbatch scripts
+*.sbatch
+
+# Packaging / distribution artifacts
+*.egg-info/
+*.egg
+dist/
+build/
