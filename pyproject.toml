@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cgm"
+version = "0.1.0"
+description = "Calibrated Generative Modeling"
+readme = "readme.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Henry Smith", email = "smithhd@stanford.edu" }, 
+          { name = "Nathaniel Diamant", email = "diamant@stanford.edu" }, 
+          { name = "Brian L. Trippe", email = "btrippe@stanford.edu" }]
+
+# TODO: add dependencies
+
+[tool.setuptools.packages.find]
+# Discover the top-level package and all subpackages 
+include = ["cgm*"]
