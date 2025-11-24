@@ -156,7 +156,9 @@ def calibrate_relaxed(
                         "loss": total_loss_val.item(),
                         "constraint_loss": viol_loss_val.item(),
                         "kl_loss": kl_loss_val.item(),
-                        "h_bar": hx.mean(0).detach().cpu(),
+                        "h_bar": hx.mean(0).detach().cpu().item(),
+                        "theta": torch.sigmoid(model.logit_p).item()
+                        if hasattr(model, "logit_p") else float("nan"),
                     },
                     model,
                     base_model,
@@ -168,6 +170,203 @@ def calibrate_relaxed(
 
     # RETURN THE CALIBRATED MODEL
     return model
+
+def calibrate_relaxed_offpolicy(
+    model: Model[SampleType],
+    h: Callable[[SampleType], torch.Tensor],
+    hstar: torch.Tensor,
+    lambd: float,
+    epochs: int = 1000,
+    batch_size: int = 100,
+    optimizer_cls: Type[optim.Optimizer] = optim.Adam,
+    optimizer_params: dict[str, Any] = {"lr": 1e-3},
+    proposal_optimizer_cls: Type[optim.Optimizer] = optim.Adam,
+    proposal_optimizer_params: dict[str, Any] = {},
+    lr_scheduler_cls: Optional[
+        Type[optim.lr_scheduler.LRScheduler]
+    ] = optim.lr_scheduler.CosineAnnealingLR,
+    scheduler_params: Optional[dict[str, Any]] = None,
+    samp_chunks: int = 1,
+    batch_chunks: int = 1,
+    use_loo: bool = True,
+    logger: Callable[
+        [dict[str, Any], Model, Model, Model, SampleType], None
+    ] = lambda x, *args: utils.default_logger(x),
+    checkpoint_fn: Optional[utils.CheckpointFn] = None,
+    disable_pbar: bool = False,
+) -> Model:
+
+    # === SETUP ======================================================
+    base_model = utils.clone_network(model)
+    proposal_model = utils.clone_network(model, disable_gradients=False)       # (3) NEW
+
+    optimizer_theta = optimizer_cls(model.parameters(), **optimizer_params)
+    if 'lr' not in proposal_optimizer_params:
+        proposal_optimizer_params['lr'] = 10 * optimizer_params.get('lr', 1e-3)
+    optimizer_phi = proposal_optimizer_cls(
+        proposal_model.parameters(), **proposal_optimizer_params
+    )
+
+    scheduler_params = (
+        {"T_max": epochs, "eta_min": 1e-6}
+        if (scheduler_params is None and lr_scheduler_cls is optim.lr_scheduler.CosineAnnealingLR)
+        else scheduler_params
+    )
+    scheduler_theta = (
+        lr_scheduler_cls(optimizer_theta, **scheduler_params)
+        if lr_scheduler_cls is not None
+        else None
+    )
+
+    pbar = tqdm(range(epochs), desc="Training Epochs (off-policy)", disable=disable_pbar)
+
+    # === LOOP ========================================================
+    for epoch in pbar:
+
+        # --------------------------------------------------------------
+        # 1. SAMPLE FROM PROPOSAL q_phi (off-policy)
+        # --------------------------------------------------------------
+        with torch.no_grad():
+            xs = proposal_model.sample(batch_size)
+
+        # --------------------------------------------------------------
+        # 2. COMPUTE log_p_theta (NO GRAD) and log_q_phi (WITH GRAD)
+        # --------------------------------------------------------------
+        # log_p_theta does NOT require grad
+        with torch.no_grad():
+            log_p_theta = log_p_chunked(
+                model, xs, batch_size, batch_chunks, samp_chunks
+            )
+
+        log_q_phi = log_p_chunked(
+            proposal_model, xs, batch_size, batch_chunks, samp_chunks
+        )
+
+        # importance weights w = p_theta / q_phi (detached)
+        w = torch.exp((log_p_theta - log_q_phi).detach())
+
+        # --------------------------------------------------------------
+        # 3. CONSTRAINT VIOLATION
+        # --------------------------------------------------------------
+        hx = h(xs)
+
+        # dummy weights to extract per-sample coefficients c_viol
+        w_dummy = torch.ones(batch_size, device=model.device, requires_grad=True)
+        viol_loss_dummy = utils.compute_violation_loss(hx, hstar, w_dummy * w)
+        c_viol = torch.autograd.grad(viol_loss_dummy, w_dummy)[0].detach()
+        viol_loss_val = viol_loss_dummy.detach()
+
+        # --------------------------------------------------------------
+        # 4. KL TERM (same as original, but using xs ~ proposal)
+        # --------------------------------------------------------------
+        with torch.no_grad():
+            log_p_base = log_p_chunked(
+                base_model, xs, batch_size, batch_chunks, samp_chunks
+            )
+        kls = log_p_theta - log_p_base
+        if use_loo:
+            kls = kls - (kls.sum() - kls) / (batch_size - 1)
+        c_kl = kls / batch_size
+        kl_loss_val = kls.mean()
+
+        # --------------------------------------------------------------
+        # 5. TOTAL PER-SAMPLE COEFFICIENTS
+        # --------------------------------------------------------------
+        c = lambd * c_kl + c_viol
+        total_loss_val = viol_loss_val + lambd * kl_loss_val
+
+        # --------------------------------------------------------------
+        # 6 & 7. JOINT UPDATE OF θ AND φ USING PER-SAMPLE GRADIENTS
+        # --------------------------------------------------------------
+        optimizer_theta.zero_grad(set_to_none=True)
+        psi_norms = []
+
+        for m in range(batch_size):
+            # scalar weight for this sample
+
+            # ----------------------------------------------------------
+            # θ update contribution from sample m:
+            #   loss_theta_m = c[m] * log p_theta(x_m)
+            # ----------------------------------------------------------
+            logp_single = model.log_p(xs[m:m+1])          # scalar tensor
+            loss_theta_m = c[m] * logp_single
+
+            # gradient wrt θ for this sample (used for θ and ψ)
+            grads_m = torch.autograd.grad(
+                loss_theta_m,
+                model.parameters(),
+                retain_graph=True,
+                allow_unused=True,
+                create_graph=False,   # we don't need higher-order grads
+            )
+
+            # Accumulate θ gradients manually
+            for p, g in zip(model.parameters(), grads_m):
+                if g is None:
+                    continue
+                if p.grad is None:
+                    p.grad = g.detach().clone()
+                else:
+                    p.grad.add_(g.detach())
+
+            # ----------------------------------------------------------
+            # ψ_m = w[m] * c[m] * ∇_θ log p_theta(x_m)
+            psi_m = w[m] * torch.stack(grads_m).detach()
+            psi_norms.append((psi_m * psi_m).sum())
+
+        # apply θ update
+        optimizer_theta.step()
+        if scheduler_theta is not None:
+            scheduler_theta.step()
+
+        psi_norms = torch.stack(psi_norms)  # [batch_size]
+
+        # --------------------------------------------------------------
+        # φ UPDATE: minimize E_q [ ||ψ||^2 * log q_phi ]
+        # --------------------------------------------------------------
+        loss_phi = -(psi_norms.detach() * log_q_phi).mean()
+
+        optimizer_phi.zero_grad(set_to_none=True)
+        loss_phi.backward()
+        optimizer_phi.step()
+
+        # --------------------------------------------------------------
+        # 8. LOGGING
+        # --------------------------------------------------------------
+        pbar.set_postfix({
+            "loss": f"{total_loss_val.item():.4f}",
+            "viol": f"{viol_loss_val.item():.4f}",
+            "kl": f"{kl_loss_val.item():.4f}",
+        })
+
+        if logger is not None:
+            with torch.no_grad():
+                logger(
+                    {
+                        "epoch": epoch,
+                        "loss": total_loss_val.item(),
+                        "constraint_loss": viol_loss_val.item(),
+                        "kl_loss": kl_loss_val.item(),
+                        # h_bar but weighted by importance weights
+                        "h_bar": (w[:, None] * hx).mean(0).detach().cpu().item(),
+                        "proposal_loss": loss_phi.item(),
+                        "phi": proposal_model.model_p().item()
+                        if hasattr(proposal_model, "logit_p") else float("nan"),
+                        "theta": model.model_p().item()
+                        if hasattr(model, "logit_p") else float("nan"),
+                    },
+                    model,
+                    base_model,
+                    proposal_model,
+                    xs,
+                )
+
+        if checkpoint_fn is not None:
+            checkpoint_fn(model, total_loss_val.item(), optimizer_theta, scheduler_theta, epoch)
+
+    return model
+
+
 
 
 def calibrate_reward(
