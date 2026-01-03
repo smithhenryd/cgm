@@ -201,7 +201,7 @@ class BackwardDrift(nn.Module):
 
 class ScoreNetwork(nn.Module):
     """
-    Simple NN architecture for modelling the score of a noising  process
+    Simple NN architecture for modelling the score of a noising process
     """
 
     def __init__(

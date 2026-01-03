@@ -156,9 +156,7 @@ def h_bi(x: dict[str, torch.Tensor], quantile_vals: dict[str:float]) -> torch.Te
     hh_vals = torch.concat(hh_vals, axis=0)
     return hh_vals
 
-
-if __name__ == "__main__":
-
+def main():
     # Parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -389,3 +387,7 @@ if __name__ == "__main__":
             x0 = samps[n]
             x0 = x0.reshape(x0.shape[0] // 3, 3)
             secstruct.save_pdb(x0, os.path.join(out_dir, f"sample_{n}.pdb"))
+
+
+if __name__ == "__main__":
+    main()
