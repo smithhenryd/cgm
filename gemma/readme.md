@@ -13,6 +13,10 @@ cd ..
 python -m pip install -e .
 cd gemma
 ```
+You'll also need to get access to [Gemma 2](https://huggingface.co/google/gemma-2-9b-it) and log into huggingface via
+```
+huggingface-cli login
+```
 
 2. Finetune Gemma
 You can now finetune Gemma, e.g.
