@@ -1,0 +1,32 @@
+name: gemma
+channels:
+  - conda-forge
+
+dependencies:
+  # --- Core System & Compilers ---
+  - python=3.12
+  - gcc_linux-64
+  - gxx_linux-64
+  - sysroot_linux-64
+  - pip
+
+  # --- Data Science & Math ---
+  - cvxpy
+  - six
+  - seaborn
+  # Note: pandas and numpy will be installed automatically as dependencies of seaborn/cvxpy
+
+  # --- Pip Dependencies ---
+  - pip:
+      - "--extra-index-url https://download.pytorch.org/whl/cu124"
+      - "torch==2.5.1+cu124"
+      - "torchvision==0.20.1+cu124"
+      - "torchaudio==2.5.1+cu124"
+
+      # 2. Gemma / LLM Specifics
+      - "transformers>=4.44.0"
+      - "accelerate>=0.33.0"
+      - "peft>=0.12.0"
+      
+      # 3. Other Python Utils
+      - "gender-guesser"
