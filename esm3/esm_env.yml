@@ -1,0 +1,26 @@
+name: esm3
+channels:
+  - conda-forge
+
+dependencies:
+  # --- Core System & Compilers ---
+  - python=3.12
+  - gcc_linux-64
+  - gxx_linux-64
+  - sysroot_linux-64
+  - pip
+
+  # --- Data Science ---
+  - cvxpy
+  - seaborn
+
+  # --- Pip Dependencies ---
+  - pip:
+      - "--extra-index-url https://download.pytorch.org/whl/cu124"
+      - "torch==2.4.1+cu124"
+      - "torchvision==0.19.1+cu124"  # Compatible with torch 2.4.1
+      - "torchaudio==2.4.1+cu124"    # Compatible with torch 2.4.1
+      
+      # ESM & Structure Tools
+      - "esm"
+      - "pydssp"
