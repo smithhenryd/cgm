@@ -1,7 +1,7 @@
 # Gemma-2 Experiments
 To reproduce our code for fine-tuning `Gemma-2-9B-IT`, follow these steps:
 
-1. Install the environment
+## 1. Install the environment
 ```
 mamba env create -f gemma_env.yml
 mamba activate gemma
@@ -18,7 +18,7 @@ You'll also need to get access to [Gemma 2](https://huggingface.co/google/gemma-
 huggingface-cli login
 ```
 
-2. Finetune Gemma
+## 2. Finetune Gemma
 You can now finetune Gemma, e.g.
 ```bash
 OUT_DIR=gemma_cgm_relax
@@ -35,7 +35,7 @@ python cgm_gemma.py \
 ```
 This will save logs, the finetuned model weights, and example generations to `OUT_DIR`.
 
-3. Compute model log probabilities for evaluation
+## 3. Compute model log probabilities for evaluation
 This step is used to compute the symmetrized KL.
 ```bash
 python get_log_probs.py \
@@ -43,4 +43,4 @@ python get_log_probs.py \
   --ft_model_path "$OUT_DIR"/cgm_relax_seed=0_lambd=0.1.pt \
   --output_folder "$OUT_DIR"
 ```
-It produces a `.pt` file that contains base and finetuned Gemma log probabilities for samples from the finetuned model.
+This produces a `.pt` file that contains base and finetuned Gemma log probabilities for samples from the finetuned model.
