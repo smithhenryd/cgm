@@ -8,7 +8,7 @@ import os
 
 from tqdm import tqdm
 
-from typing import Any, Callable, Optional, Type, Tuple, Union
+from typing import Any, Callable, Optional, Tuple, Union
 
 from cgm.utils import default_logger, module_device
 from neural_sde import NeuralSDE, SamplePath
@@ -48,10 +48,10 @@ def train_neural_sde(
     epochs: int = 100,
     batches: int = 500,
     batch_size: int = 256,
-    optimizer_cls: Type[optim.Optimizer] = optim.Adam,
+    optimizer_cls: optim.Optimizer = optim.Adam,
     optimizer_params: dict[str, Any] = {"lr": 1e-2},
     lr_scheduler_cls: Optional[
-        Type[optim.lr_scheduler.LRScheduler]
+        optim.lr_scheduler.LRScheduler
     ] = optim.lr_scheduler.CosineAnnealingLR,
     scheduler_params: Optional[dict[str, Any]] = None,
     logger: Callable[[dict[str, Any]], None] = default_logger,
@@ -210,7 +210,7 @@ class ScoreNetwork(nn.Module):
         hidden_dim: int,
         time_emb_dim: int,
         sigma: Callable[[torch.Tensor], torch.Tensor] = sigma,
-        device: Type[torch.device] = torch.device("cpu"),
+        device: torch.device = torch.device("cpu"),
     ) -> None:
 
         super().__init__()
@@ -258,7 +258,7 @@ def compute_KL_est(base_model: NeuralSDE, x: SamplePath) -> torch.Tensor:
 
     xs, zs, ts = x.xs, x.zs, x.ts
     batch_size, Nsteps, sde_dim = xs.shape  # (batch_size, Nsteps, sde_dim)
-    del_t = ts[1:] - ts[:-1]  # (Nsteps -1)
+    del_t = ts[1:] - ts[:-1]  # (Nsteps-1)
 
     # Compute noise
     sigmas = base_model.diffusion(ts[:-1]).reshape([Nsteps - 1])  # (Nsteps-1)
@@ -277,93 +277,3 @@ def compute_KL_est(base_model: NeuralSDE, x: SamplePath) -> torch.Tensor:
         torch.square((fs_P - fs_Q) / sigmas[None, :, None]) * del_t[None, :, None]
     ).sum(dim=[-1, -2])
     return kl_est
-
-
-# -------------------------- Save and load a Neural-SDE object --------------------------
-def save_checkpoint(
-    model: NeuralSDE,
-    ckpt_dir: Union[str, Path],
-    optimizer: Optional[torch.optim.Optimizer] = None,
-    scheduler: Optional[optim.lr_scheduler.LRScheduler] = None,
-    epoch: int = 0,
-) -> str:
-    """
-    Save a NeuralSDE checkpoint
-    """
-    ckpt_dir = os.fspath(ckpt_dir)
-    ckpt_path = os.path.join(ckpt_dir, f"ckpt_epoch_{epoch}.pth")
-
-    blob = {
-        "epoch": int(epoch),
-        "sde_dim": int(getattr(model, "sde_dim", 0)),  # good to save for sanity checks
-        "t_grid": model.t_grid.detach().clone(),
-        "model_state": model.state_dict(),
-    }
-    if optimizer is not None:
-        blob["optim_state"] = optimizer.state_dict()
-    if scheduler is not None and hasattr(scheduler, "state_dict"):
-        blob["scheduler_state"] = scheduler.state_dict()
-
-    torch.save(blob, ckpt_path)
-    return ckpt_path
-
-
-def load_checkpoint(
-    ckpt_path: Union[str, Path],
-    model: NeuralSDE,
-    map_location: Union[torch.device, str] = "auto",
-    strict: bool = True,
-) -> Tuple[NeuralSDE, Optional[dict], Optional[dict], int]:
-    """
-    Load a NeuralSDE checkpoint
-    """
-
-    ckpt_path = os.fspath(ckpt_path)
-
-    # Resolve target device
-    if map_location == "auto":
-        try:
-            target = model.device
-        except Exception:
-            target = torch.device("cpu")
-    else:
-        target = (
-            torch.device(map_location)
-            if isinstance(map_location, str)
-            else map_location
-        )
-
-    # Ensure the model is on the target device before loading weights
-    model.to(target)
-
-    # Load blob with tensors mapped to target
-    blob = torch.load(ckpt_path, map_location=target)
-
-    # Check that the dimension of the SDE lines up with the saved model
-    if "sde_dim" in blob:
-        ckpt_dim = int(blob["sde_dim"])
-        if strict and hasattr(model, "sde_dim") and int(model.sde_dim) != ckpt_dim:
-            raise RuntimeError(
-                f"SDE dimension mismatch: model={int(model.sde_dim)} vs ckpt={ckpt_dim}"
-            )
-
-    # Put t_grid onto target device
-    t_grid = blob["t_grid"]
-    if not isinstance(t_grid, torch.Tensor):
-        raise RuntimeError("Checkpoint field 't_grid' is not a torch.Tensor")
-    model.t_grid = t_grid
-
-    # Load weights
-    missing, unexpected = model.load_state_dict(blob["model_state"], strict=strict)
-    if strict and (missing or unexpected):
-        raise RuntimeError(
-            "Error loading NeuralSDE checkpoint with strict=True:\n"
-            f"  Missing keys:    {missing}\n"
-            f"  Unexpected keys: {unexpected}"
-        )
-
-    optim_state = blob.get("optim_state")
-    scheduler_state = blob.get("scheduler_state")
-    epoch = int(blob["epoch"])
-    print(f"Successfully checkpoint {ckpt_path}")
-    return model, optim_state, scheduler_state, epoch

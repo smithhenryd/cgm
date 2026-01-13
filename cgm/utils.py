@@ -13,7 +13,7 @@ import torch.nn as nn
 from torch import optim
 import cvxpy as cp
 
-from typing import Any, TextIO, Union, Optional
+from typing import Any, Optional, TextIO, Union
 
 
 def clone_network(net: nn.Module, disable_gradients=True) -> nn.Module:
@@ -106,7 +106,6 @@ def compute_violation_loss(
     Computes the violation loss from h(x), h*, and weights
     """
     hx = hx - h_target[None, :]
-
     # Multiply by weights to track gradients
     hx = hx * weights[:, None]
     hbar = torch.mean(hx, dim=0)

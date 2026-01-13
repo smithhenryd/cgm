@@ -2,7 +2,7 @@ import argparse
 import os
 import shutil
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 import torch
 import torchvision as tv
@@ -39,7 +39,7 @@ def denorm_minus1_1_to_0_1(x: torch.Tensor) -> torch.Tensor:
     """
     Transform a tensor with values [-1,1] -> [0,1]
     """
-    return 0.5 * (img.clamp(-1, 1) + 1.)
+    return 0.5 * (x.clamp(-1, 1) + 1.)
 
 
 def preprocess_afhq_eval(
@@ -95,7 +95,7 @@ def load_state_dict(model: NormalizingFlow, ckpt_path: str, device: torch.device
 
 
 def generate_samples_to_dir(
-    flow: NormalizingFlow,
+    model: NormalizingFlow,
     out_dir: str,
     n_samples: int,
     batch_size: int = 128,
@@ -111,17 +111,17 @@ def generate_samples_to_dir(
     class_dir = os.path.join(out_dir, class_name)
     os.makedirs(class_dir, exist_ok=True)
 
-    flow.eval()
+    model.eval()
     with torch.no_grad():
         idx = 0
         pbar = tqdm(total=n_samples, desc="Generating samples", unit="img")
         while idx < n_samples:
             b = min(batch_size, n_samples - idx)
-            samps = flow.sample(b)
+            samps = model.sample(b, perform_tweedie=True)
             xs = samps.xs.view(b, channel_size, img_size, img_size)
             xs = denorm_minus1_1_to_0_1(xs)  # convert image from [-1, 1] -> [0, 1]
             for i in range(b):
-                out_path = os.path.join(out_dir, f"sample_{idx + i:06d}.png")
+                out_path = os.path.join(class_dir, f"sample_{idx + i:06d}.png")
                 save_png_from_tensor01(xs[i], out_path)
             idx += b
             pbar.update(b)
@@ -270,9 +270,9 @@ def main():
     parser.add_argument(
         "--split", type=str, default="train", choices=["train", "val"]
     )
-    parser.add_argument("--out_fake_dir", type=str) # Where to write/generated samples for FID
-    parser.add_argument("--path", type=str, default=None) # Path to base TarFlow model
-    parser.add_argument("--ckpt", type=str, default=None) # Path to TarFlow checkpoint (fine-tuned)
+    parser.add_argument("--out_fake_dir", type=str) # directory containing fake samples for FID evaluation, or empty directory in which to generate samples
+    parser.add_argument("--path", type=str, default=None) # path to base TarFlow model
+    parser.add_argument("--ckpt", type=str, default=None) # path to TarFlow checkpoint (fine-tuned)
     parser.add_argument("--device", type=str, default="cuda")
     parser.add_argument("--img_size", type=int, default=256)
     parser.add_argument("--n_samples", type=int, default=50000)
@@ -331,7 +331,7 @@ def main():
             sampling_args={"guidance": 1.0, "attn_temp": 1.0},
         )
         model = NormalizingFlow(dim=dim, map=tarflow_map)
-        load_state_dict(flow, args.ckpt, device=device)
+        load_state_dict(model, args.ckpt, device=device)
 
         # Generate samples
         generate_samples_to_dir(
@@ -354,6 +354,9 @@ def main():
         device=args.device,
     )
     print(f"FID ({args.split} @ {img_size}): {fid:.4f}")
+
+    # Cleanup transformed real dir
+    shutil.rmtree(real_outdir, ignore_errors=True)
 
 if __name__ == "__main__":
     main()

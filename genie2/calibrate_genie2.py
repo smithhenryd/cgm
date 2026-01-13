@@ -16,7 +16,7 @@ from cgm.cgm import calibrate_relaxed, calibrate_reward
 from cgm.utils import chunk_bounds, CheckpointEveryN
 
 sys.path.append("../neural_sde")
-from utils import BackwardDrift, compute_KL_est, save_checkpoint
+from utils import BackwardDrift, compute_KL_est
 from neural_sde import NeuralSDE
 
 
