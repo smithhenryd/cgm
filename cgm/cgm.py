@@ -369,6 +369,209 @@ def calibrate_relaxed_offpolicy(
 
 
 
+def _compute_sr_weights(hstar_val: float, batch_size: int) -> tuple[float, float]:
+    """
+    Precompute (w0, w1) for the Stationary REINFORCE gradient estimator.
+
+    Solves for weights satisfying:
+      (i)  w(1) - w(0) = 1   (normalization; matches absolute-error scaling far from h*)
+      (ii) E_{h*}[U_hat] = 0  (stationarity; zero expected update at p = h*)
+
+    The solution is:
+      w(0) = -(1-h*) * w0_factor / D
+      w(1) =  h*     * w1_factor / D,   D = 2*alpha*(h* - beta)
+    where  w0_factor = h* - 2*alpha*beta       (> 0 always, since beta < h*)
+           w1_factor = 2*alpha*(1-beta) - (1-h*)  (> 0 when M is not too large relative to 1/h*)
+
+    When w1_factor <= 0 the finite-M formula is invalid because it would give w(1) < 0,
+    making the update diverge. In this regime D, w0_factor, and w1_factor all vanish at
+    the same O(sigma) rate as M -> inf (CLT), so by L'Hopital the weights converge to
+    w(0) -> -(1-h*) and w(1) -> h*, which are returned as the fallback.
+    """
+    M = batch_size
+    h = hstar_val
+
+    if h <= 0.0 or h >= 1.0:
+        return -(1.0 - h), h
+
+    from torch.distributions import Binomial as _Binomial
+
+    k_vals = torch.arange(M + 1, dtype=torch.float64)
+    dist = _Binomial(total_count=M, probs=torch.tensor(h, dtype=torch.float64))
+    pmf = dist.log_prob(k_vals).exp()  # shape (M+1,)
+
+    mask = k_vals < (M * h)
+    alpha = pmf[mask].sum().item()
+    if alpha < 1e-15:
+        return -(1.0 - h), h
+
+    beta = ((k_vals[mask] / M) * pmf[mask]).sum().item() / alpha
+
+    w0_factor = h - 2.0 * alpha * beta                    # h* - 2αβ; > 0 always
+    w1_factor = 2.0 * alpha * (1.0 - beta) - (1.0 - h)   # 2α(1-β) - (1-h*); > 0 for M not too large
+    if w0_factor < 1e-15 or w1_factor < 1e-15:
+        # L'Hopital (M -> inf) limit: all three quantities vanish at O(sigma) rate
+        return -(1.0 - h), h
+
+    D = 2.0 * alpha * (h - beta)
+    w0 = -(1.0 - h) * w0_factor / D
+    w1 = h * w1_factor / D
+    return float(w0), float(w1)
+
+
+def calibrate_stationary_reinforce(
+    model: Model[SampleType],
+    h: Callable[[SampleType], torch.Tensor],
+    hstar: torch.Tensor,
+    lambd: float = 0.0,
+    epochs: int = 1000,
+    batch_size: int = 100,
+    optimizer_cls: Type[optim.Optimizer] = optim.Adam,
+    optimizer_params: dict[str, Any] = {"lr": 1e-3},
+    lr_scheduler_cls: Optional[
+        Type[optim.lr_scheduler.LRScheduler]
+    ] = optim.lr_scheduler.CosineAnnealingLR,
+    scheduler_params: Optional[dict[str, Any]] = None,
+    samp_chunks: int = 1,
+    batch_chunks: int = 1,
+    use_loo: bool = True,
+    logger: Callable[
+        [dict[str, Any], Model, Model, SampleType], None
+    ] = lambda x, *args: utils.default_logger(x),
+    checkpoint_fn: Optional[utils.CheckpointFn] = None,
+    disable_pbar: bool = False,
+) -> Model:
+    """
+    Calibrates a generative model using the Stationary REINFORCE gradient estimator.
+
+    Implements the stationary estimator from stationary_reinforce.tex:
+      U_hat = [1/M * sum_m nabla log p_theta(x_m) * w(h(x_m))] * (-1)^I[y < h*]
+    where w(0) and w(1) are chosen so E[U_hat] = 0 when E_theta[h(x)] = h* and
+    gradient magnitudes are symmetric under h* <-> 1-h*.
+
+    h must be binary: h(x) in {0, 1}.
+    """
+    hstar_list = hstar.cpu().tolist()
+    if not isinstance(hstar_list, list):
+        hstar_list = [hstar_list]
+    n_constraints = len(hstar_list)
+
+    # Precompute (w0, w1) for each constraint based on h* and batch_size
+    weights = [_compute_sr_weights(hv, batch_size) for hv in hstar_list]
+    w0_vals = torch.tensor([w[0] for w in weights], dtype=torch.float32, device=model.device)
+    w1_vals = torch.tensor([w[1] for w in weights], dtype=torch.float32, device=model.device)
+
+    # Clone base model only if KL regularization is used
+    base_model = utils.clone_network(model) if lambd > 0.0 else model
+
+    optimizer = optimizer_cls(model.parameters(), **optimizer_params)
+
+    scheduler_params = (
+        {"T_max": epochs, "eta_min": 1e-6}
+        if (
+            scheduler_params is None
+            and lr_scheduler_cls is optim.lr_scheduler.CosineAnnealingLR
+        )
+        else scheduler_params
+    )
+    scheduler = (
+        lr_scheduler_cls(optimizer, **scheduler_params)
+        if lr_scheduler_cls is not None
+        else None
+    )
+
+    pbar = tqdm(range(epochs), desc="Training Epochs (SR)", disable=disable_pbar)
+    for epoch in pbar:
+
+        with torch.no_grad():
+            xs = model.sample(batch_size)
+
+        # hx: (batch_size, n_constraints), expected binary {0, 1}
+        hx = h(xs)
+        if hx.dim() == 1:
+            hx = hx.unsqueeze(-1)
+
+        # Batch fraction y_j and sign for each constraint
+        y = hx.mean(dim=0)  # (n_constraints,)
+        sign = (1.0 - 2.0 * (y < hstar.to(model.device)).float())  # (n_constraints,)
+
+        # Per-sample per-constraint weights: w(h=0)=w0_j, w(h=1)=w1_j
+        w_m = torch.where(hx > 0.5, w1_vals.unsqueeze(0), w0_vals.unsqueeze(0).expand(batch_size, -1))
+
+        # Sum over constraints; divide by M to get per-sample coefficient c
+        c_viol = (sign.unsqueeze(0) * w_m).sum(dim=1) / batch_size  # (batch_size,)
+
+        # Optional KL regularization
+        kl_loss_val = torch.tensor(0.0, device=model.device)
+        if lambd > 0.0:
+            with torch.no_grad():
+                log_p_theta = log_p_chunked(model, xs, batch_size, batch_chunks, samp_chunks)
+                log_p_base = log_p_chunked(base_model, xs, batch_size, batch_chunks, samp_chunks)
+            kls = log_p_theta - log_p_base
+            kl_loss_val = kls.mean()
+            if use_loo:
+                kls = kls - (kls.sum() - kls) / (batch_size - 1)
+            c = lambd * kls / batch_size + c_viol
+        else:
+            c = c_viol
+
+        # Violation loss for logging (no grad)
+        with torch.no_grad():
+            viol_loss_val = utils.compute_violation_loss(
+                hx, hstar.to(model.device), torch.ones(batch_size, device=model.device)
+            )
+
+        # Backprop
+        optimizer.zero_grad(set_to_none=True)
+        for i in range(batch_chunks):
+            min_idx, max_idx = utils.chunk_bounds(batch_size, batch_chunks, i)
+            c_i = c[min_idx:max_idx]
+            for j in range(samp_chunks):
+                delta_ij = model.log_p(
+                    xs,
+                    batch_idx=i,
+                    batch_chunks=batch_chunks,
+                    sample_idx=j,
+                    sample_chunks=samp_chunks,
+                )
+                (c_i * delta_ij).sum().backward()
+
+        optimizer.step()
+        if scheduler is not None:
+            scheduler.step()
+
+        total_loss_val = viol_loss_val + lambd * kl_loss_val
+
+        pbar.set_postfix({
+            "loss": f"{total_loss_val.item():.4f}",
+            "viol": f"{viol_loss_val.item():.4f}",
+            "kl": f"{kl_loss_val.item():.4f}",
+        })
+
+        if logger is not None:
+            with torch.no_grad():
+                logger(
+                    {
+                        "epoch": epoch,
+                        "loss": total_loss_val.item(),
+                        "constraint_loss": viol_loss_val.item(),
+                        "kl_loss": kl_loss_val.item(),
+                        "h_bar": hx.mean(0).detach().cpu().squeeze().item()
+                        if n_constraints == 1 else float("nan"),
+                        "theta": torch.sigmoid(model.logit_p).item()
+                        if hasattr(model, "logit_p") else float("nan"),
+                    },
+                    model,
+                    base_model,
+                    xs,
+                )
+
+        if checkpoint_fn is not None:
+            checkpoint_fn(model, total_loss_val.item(), optimizer, scheduler, epoch)
+
+    return model
+
+
 def calibrate_reward(
     model: Model,
     h: Callable[[SampleType], torch.Tensor],
