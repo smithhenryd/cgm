@@ -106,9 +106,8 @@ Figure~\ref{fig:implied_loss} compares the three estimators on a Bernoulli$(p)$ 
 The top row shows the expected update direction $\mathbb{E}_p[\hat{U}]$ as a function of the model parameter $p$, for four target values $h^*$.
 The bottom row shows the \emph{implied loss} $V(p) = \int_0^p \mathbb{E}_q[\hat{U}]\,/\,(q(1-q))\,\mathrm{d}q$ (shifted so $V(h^*)=0$), which is the loss whose gradient the update direction corresponds to in parameter space.
 
-All three estimators satisfy $\mathbb{E}_{h^*}[\hat{U}] = 0$, confirming stationarity at $p = h^*$.
 The squared error estimator has an implied loss equal to $(p - h^*)^2$ and its expected gradient decays quadratically near $h^*$, which can cause optimization to stall.
-The absolute error and Stationary REINFORCE estimators have implied losses that are approximately $V$-shaped near $h^*$, with gradients that remain bounded away from zero, leading to sharper convergence near the constraint.
+The absolute error and Stationary REINFORCE estimators have implied losses that are approximately $V$-shaped near $h^*$, with gradients that remain bounded away from zero, leading to sharper convergence near the constraint, but with significant bias (especially for small $h^*$)
 Batch size $M=32$ is used to ensure the Stationary REINFORCE formula is valid across all $h^*$ values shown.
 
 \begin{figure}[h]
@@ -119,7 +118,6 @@ Batch size $M=32$ is used to ensure the Stationary REINFORCE formula is valid ac
         Top: $\mathbb{E}_p[\hat{U}]$ vs.\ model parameter $p$ for target values $h^* \in \{0.1, 0.3, 0.5, 0.9\}$ and batch size $M=32$.
         Bottom: implied loss $V(p) = \int_0^p \mathbb{E}_q[\hat{U}]\,/\,(q(1-q))\,\mathrm{d}q$, shifted so $V(h^*)=0$.
         The dashed red line marks $p = h^*$.
-        All three estimators have zero expected update at $p = h^*$
         The Stationary REINFORCE and absolute error estimators maintain larger gradients near $h^*$ compared to the squared error baseline.
     }
     \label{fig:implied_loss}
