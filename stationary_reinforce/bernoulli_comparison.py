@@ -9,6 +9,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
+import sys
+sys.path.append("./../")
 from cgm import cgm
 
 
@@ -61,7 +63,6 @@ def run_squared_error(h_star, batch_size, epochs=5000, lr=3e-2):
         disable_pbar=True,
         logger=logger,
         lr_scheduler_cls=None,
-        L1_loss=False,
     )
     return np.array(logger.h_bar)
 

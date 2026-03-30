@@ -27,7 +27,7 @@ For fine-tuning with current version of CGM relax our procedure looks like this
 \begin{enumerate}
     \item sample $x_1, \dots, x_M \overset{iid}{\sim} p_\theta,$
     \item compute $y = \frac{1}{M}\sum h(x_m),$ and
-    \item update $\theta$ by taking a descent step $\theta \leftarrow \theta - \alpha\,\hat U(\theta, x_{1:M})$, where
+    \item update $\theta$ by taking a step $\theta \leftarrow \theta - \alpha\,\hat U(\theta, x_{1:M})$, where
     \[
         \hat U(\theta, x_{1:M}) = \left[\frac{1}{M}\sum (\nabla_\theta \log p_\theta(x_m))w(h(x_m))\right] \eta(y).
     \]
@@ -35,18 +35,18 @@ For fine-tuning with current version of CGM relax our procedure looks like this
 
 \paragraph{Squared error.}
 \begin{itemize}
-    \item The squared error corresponds to choosing $w(h) = h - h^*$, so $w(0) = -h^*$ and $w(1) = 1 - h^*$, and $\eta(y) = 2(y - h^*)$.
-    \item When $y < h^*$, $\eta(y) < 0$, so $w(h(x_m))\eta(y)$ is negative for $h(x_m)=1$ and positive for $h(x_m)=0$. The descent step $\theta \leftarrow \theta - \alpha\hat U$ therefore increases the likelihood of samples with $h(x_m)=1$ and decreases it for $h(x_m)=0$, pushing $\mathbb{E}_\theta[h(x)]$ toward $h^*$.
-    \item We also add a bias correction so that $\hat U$ is an unbiased estimator of the negative gradient of the squared error, $\nabla_\theta (\mathbb{E}_\theta[h(x)] - h^*)^2$, so the descent step reduces the squared calibration error in expectation. Deriving the bias correction is possible because of a bias-variance decomposition special to the squared error.
-    \item However, a limitation of this loss is that the violation doesn't become small enough. Reason: the magnitude of the expected gradient is too small near $h^*$. We regularly see optimization stop short of satisfying the constraint.
+    \item Ignoring for now the bias correction, the squared error corresponds to choosing $w(h) = h - h^*$, so $w(0) = -h^*$ and $w(1) = 1 - h^*$, and $\eta(y) = 2(y - h^*)$.
+    \item Intuition: if $y < h^*$ then $\eta(y) < 0$, so $w(h(x_m))\eta(y)$ is negative for $h(x_m)=1$ and positive for $h(x_m)=0$. The step $\theta \leftarrow \theta - \alpha\hat U$ therefore increases the likelihood of samples with $h(x_m)=1$ and decreases it for $h(x_m)=0$, pushing $\mathbb{E}_\theta[h(x)]$ toward $h^*$.
+    \item We also add a bias correction so that $\hat U$ is an unbiased estimator of the negative gradient of the squared error, $\nabla_\theta (\mathbb{E}_\theta[h(x)] - h^*)^2$, so the step reduces the squared calibration error in expectation. Deriving the bias correction is possible because of a bias-variance decomposition special to the squared error.
+    \item However, a limitation of this loss is that the violation doesn't become small enough. A reason is that $\eta(y)$ scales down the magnitude of the expected gradient when $\mathbb{E}_\theta[h(x)]$ is near $h^*$, and so optimization stops short of satisfying the constraint.
 \end{itemize}
 
 \paragraph{Absolute error.}
-An alternative approach is to define
+An alternative choice is 
 \[
     \hat U(\theta, x_{1:M}) = \nabla_\theta \left|\frac{1}{M}\sum \frac{p_{\theta}(x_m)}{p_{\mathrm{SG}(\theta)}} h(x_m) - h^*\right|.
 \]
-This resembles an gradients of the absolute loss loss that we might hope to better guarantee exact satisfaction of the constraint. But it is not clear how to make it unbiased. And in particular it has the disadvantage that the value of the gradient estimator will almost surely be identical for every $h^* \in (0, \frac{1}{M})$. Consequently, the approach will not be able to distinguish frequencies of rare events with probability below $\frac{1}{M}$.
+This resembles an gradients of the absolute loss loss that we might hope this update to better guarantee exact satisfaction of the constraint. But it is not clear how to make this update unbiased for $\nabla_\theta |\mathbb{E}_\theta[h(x)]-h^*|$. And in particular it has the disadvantage that the value of the gradient estimator will almost surely be identical for every $h^* \in (0, \frac{1}{M})$. Consequently, the approach will not be able to distinguish frequencies of rare events with probability below $\frac{1}{M}$.
 
 \paragraph{Stationary REINFORCE.}
 We would like to choose another (stochastic) update direction that has expectation zero when $\mathbb{E}_\theta[h(x)] = h^*$. We consider
@@ -62,7 +62,6 @@ where $\alpha$ and $\beta$ relate to statistics of the binomial distribution and
     \item Let $y \in \{0, \tfrac{1}{M}, \dots, 1\}$ be the empirical fraction with $y = Z/M$ and $Z \sim \mathrm{Binomial}(M, h^*)$.
     \item Define $\alpha = P\!\left[y < h^*\right]$. 
     \item Define $\beta = \mathbb{E}\!\left[y \mid y < h^*\right]$.
-    \item \textit{Intuition:} For samples with $h(x_m) = 0$, a descent step decreases the probability of $x_m$ if $y < h^*$. With $y < h^*$, the factor in front of $\nabla_\theta \log p_\theta(x_m)$ in $\hat U$ is $+1$, and so a descent step is in the direction $-\nabla_\theta \log p_\theta(x_m)$.
 \end{itemize}
 
 \paragraph{Claim:} If $\mathbb{E}_\theta[h(x)] = h^*$, then $\mathbb{E}_\theta[\hat U(\theta, x_{1:M})] = 0$.
@@ -84,24 +83,23 @@ Letting $s_i = \mathbb{E}_\theta[\nabla_\theta \log p_\theta(x) \mid h(x) = i]$,
 \begin{align*}
     &= -\alpha\big[w(1)\beta s_1 + w(0)(1-\beta)s_0\big] + (1-\alpha)\big[w(1)\gamma s_1 + w(0)(1-\gamma)s_0\big].
 \end{align*}
-Replacing $\gamma = \frac{h^* - \alpha\beta}{1-\alpha}$ and $s_1 = -\frac{1-h^*}{h^*}s_0$, and collecting terms in $s_0$:
+Two identities follow from $\mathbb{E}_\theta[h(x)] = h^*$. First, $\mathbb{E}_\theta[y] = h^*$, so by the law of total expectation $\alpha\beta + (1-\alpha)\gamma = h^*$, giving $\gamma = \frac{h^*-\alpha\beta}{1-\alpha}$. Second, the score has zero mean, $\mathbb{E}_\theta[\nabla_\theta \log p_\theta(x)] = 0$, which gives $h^* s_1 + (1-h^*)s_0 = 0$, so $s_1 = -\frac{1-h^*}{h^*}s_0$.
+
+Substituting $s_1$ and grouping by $w(1)$ and $w(0)$:
 \begin{align*}
-    &= \left[w(1)\frac{1-h^*}{h^*}(h^*-2\alpha\beta) + w(0)\bigl(1-2\alpha(1-\beta)-h^*\bigr)\right](-s_0).
+    &= w(1)\frac{1-h^*}{h^*}\bigl[\alpha\beta - (1-\alpha)\gamma\bigr]s_0 \;+\; w(0)\bigl[-\alpha(1-\beta) + (1-\alpha)(1-\gamma)\bigr]s_0.
+\end{align*}
+Using $(1-\alpha)\gamma = h^*-\alpha\beta$ and $(1-\alpha)(1-\gamma)=1-\alpha-h^*+\alpha\beta$, the bracketed coefficients simplify to $2\alpha\beta - h^*$ and $1-2\alpha+2\alpha\beta-h^*$, respectively. Factoring out $(-s_0)$:
+\begin{align*}
+    &= \left[w(1)\frac{1-h^*}{h^*}(h^*-2\alpha\beta) + w(0)\bigl(2\alpha(1-\beta)-(1-h^*)\bigr)\right](-s_0).
 \end{align*}
 Substituting $w(1) = h^*(2\alpha(1-\beta)-(1-h^*))/D$ and $w(0) = -(1-h^*)(h^*-2\alpha\beta)/D$:
 \begin{align*}
     &= \frac{1-h^*}{D}\left[(2\alpha(1-\beta)-(1-h^*))(h^*-2\alpha\beta) - (h^*-2\alpha\beta)(2\alpha(1-\beta)-(1-h^*))\right](-s_0) = 0.\qquad\square
 \end{align*}
 
-\textbf{Implementation note:} A naive implementation can lead to numerical issues.  We remark on these issues and a solution.
-\begin{itemize}
-    \item Both numerators are positive provided $M$ is not too large relative to $1/h^*$ ($D > 0$ always since $\beta < h^*$).
-    \item When the numerator of $w(1)$ is non-positive---which occurs when $M$ is large and few discrete outcomes fall below $h^*$, so $\alpha$ is small---the finite-$M$ formula is invalid because it would yield $w(1)\le 0$, reversing the update direction.
-    \item In this regime $D$, $h^*-2\alpha\beta$, and $2\alpha(1-\beta)-(1-h^*)$ all vanish at the same $O(\sigma)$ rate as $M\to\infty$ (CLT, $\sigma=\sqrt{h^*(1-h^*)/M}$).
-    \item By L'H\^{o}pital's rule the weights converge to $w(0)\to -(1-h^*)$, $w(1)\to h^*$, which are used as the fallback.
-    \item The normalization $D$ is chosen so that $w(1) - w(0) = 1$, matching the absolute-error gradient scaling for $p$ far from $h^*$, for any $M$.
-    \item An advantage of this construction is that the weights are also symmetric under $h^* \leftrightarrow 1-h^*$ (the roles of $w(0)$ and $w(1)$ swap), and recover $w(1) \to h^*$, $w(0) \to -(1-h^*)$ as $M \to \infty$.
-\end{itemize}
+The normalization $D$ is chosen so that $w(1) - w(0) = 1$, matching the absolute-error gradient scaling for $p$ far from $h^*$, for any $M$.
+The weights are also symmetric under $h^* \leftrightarrow 1-h^*$ (the roles of $w(0)$ and $w(1)$ swap), and recover $w(1) \to h^*$, $w(0) \to -(1-h^*)$ as $M \to \infty$.
 
 \paragraph{Comparison of estimators.}
 Figure~\ref{fig:implied_loss} compares the three estimators on a Bernoulli$(p)$ model with $h(x)=x$, so $\mathbb{E}_\theta[h(x)] = p$.

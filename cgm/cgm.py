@@ -409,9 +409,6 @@ def _compute_sr_weights(hstar_val: float, batch_size: int) -> tuple[float, float
 
     w0_factor = h - 2.0 * alpha * beta                    # h* - 2αβ; > 0 always
     w1_factor = 2.0 * alpha * (1.0 - beta) - (1.0 - h)   # 2α(1-β) - (1-h*); > 0 for M not too large
-    if w0_factor < 1e-15 or w1_factor < 1e-15:
-        # L'Hopital (M -> inf) limit: all three quantities vanish at O(sigma) rate
-        return -(1.0 - h), h
 
     D = 2.0 * alpha * (h - beta)
     w0 = -(1.0 - h) * w0_factor / D
