@@ -67,7 +67,7 @@ def run_squared_error(h_star, batch_size, epochs=5000, lr=3e-2):
     return np.array(logger.h_bar)
 
 
-def run_stationary_reinforce(h_star, batch_size, epochs=5000, lr=3e-2):
+def run_stationary_reinforce(h_star, batch_size, epochs=5000, lr=3e-2, scale_update_via_hstar=False):
     model = BernoulliModel(p=0.5)
     logger = Logger()
     cgm.calibrate_stationary_reinforce(
@@ -81,9 +81,14 @@ def run_stationary_reinforce(h_star, batch_size, epochs=5000, lr=3e-2):
         disable_pbar=True,
         logger=logger,
         lr_scheduler_cls=None,
+        scale_update_via_hstar=scale_update_via_hstar
     )
     return np.array(logger.h_bar)
 
+
+# ── Global options ────────────────────────────────────────────────────────────
+
+scale_update_via_hstar = True
 
 # ── Grid ──────────────────────────────────────────────────────────────────────
 
@@ -110,7 +115,10 @@ for h_star in hstar_vals:
             for rep in range(n_reps):
                 done += 1
                 print(f"[{done}/{total}] h*={h_star}, M={batch_size}, {method_name}, rep {rep+1}")
-                h_bar = runner(h_star, batch_size, epochs=epochs)
+                kwargs = {}
+                if method_name == "Stationary REINFORCE" and scale_update_via_hstar:
+                    kwargs["scale_update_via_hstar"] = True
+                h_bar = runner(h_star, batch_size, epochs=epochs, **kwargs)
                 h_bar_list.append(np.abs(h_bar - h_star))
             arr = np.array(h_bar_list)
             results[(method_name, h_star, batch_size)] = (
@@ -157,7 +165,8 @@ plt.suptitle(
     fontsize=11,
 )
 plt.tight_layout()
-plt.savefig('bernoulli_comparison.pdf', bbox_inches='tight')
-plt.savefig('bernoulli_comparison.png', dpi=150, bbox_inches='tight')
-print("Saved bernoulli_comparison.pdf / .png")
+suffix = "_with_scale_update_via_hstar" if scale_update_via_hstar else ""
+plt.savefig(f'bernoulli_comparison{suffix}.pdf', bbox_inches='tight')
+plt.savefig(f'bernoulli_comparison{suffix}.png', dpi=150, bbox_inches='tight')
+print(f"Saved bernoulli_comparison{suffix}.pdf / .png")
 plt.show()

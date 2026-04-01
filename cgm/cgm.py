@@ -431,6 +431,7 @@ def calibrate_stationary_reinforce(
     ] = lambda x, *args: utils.default_logger(x),
     checkpoint_fn: Optional[utils.CheckpointFn] = None,
     disable_pbar: bool = False,
+    scale_update_via_hstar: bool = False,
 ) -> Model:
     """
     Calibrates a generative model using the Stationary REINFORCE gradient estimator.
@@ -487,7 +488,14 @@ def calibrate_stationary_reinforce(
         sign = (1.0 - 2.0 * (y < hstar.to(model.device)).float())  # (n_constraints,)
 
         # Per-sample per-constraint weights: w(h=0)=w0_j, w(h=1)=w1_j
+        # w_m: (batch_size, n_constraints)
         w_m = torch.where(hx > 0.5, w1_vals.unsqueeze(0), w0_vals.unsqueeze(0).expand(batch_size, -1))
+
+        if scale_update_via_hstar:
+            # Scale each constraint's contribution by 1/(hstar_k * (1 - hstar_k))
+            # scale: (n_constraints,) -> unsqueeze to (1, n_constraints) for broadcast
+            scale = 1.0 / (hstar.to(model.device) * (1.0 - hstar.to(model.device)))  # (n_constraints,)
+            w_m = w_m * scale.unsqueeze(0)  # (batch_size, n_constraints)
 
         # Sum over constraints; divide by M to get per-sample coefficient c
         c_viol = (sign.unsqueeze(0) * w_m).sum(dim=1) / batch_size  # (batch_size,)
