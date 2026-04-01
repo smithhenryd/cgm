@@ -103,21 +103,22 @@ The weights are also symmetric under $h^* \leftrightarrow 1-h^*$ (the roles of $
 
 \paragraph{Comparison of estimators.}
 Figure~\ref{fig:implied_loss} compares the three estimators on a Bernoulli$(p)$ model with $h(x)=x$, so $\mathbb{E}_\theta[h(x)] = p$.
-The top row shows the expected update direction $\mathbb{E}_p[\hat{U}]$ as a function of the model parameter $p$, for four target values $h^*$.
+The top row shows the expected update direction $\mathbb{E}_p[\hat{U}]$ as a function of the model parameter $p$, for three target values $h^* \in \{0.01, 0.1, 0.3\}$.
 The bottom row shows the \emph{implied loss} $V(p) = \int_0^p \mathbb{E}_q[\hat{U}]\,/\,(q(1-q))\,\mathrm{d}q$ (shifted so $V(h^*)=0$), which is the loss whose gradient the update direction corresponds to in parameter space.
 
 The squared error estimator has an implied loss equal to $(p - h^*)^2$ and its expected gradient decays quadratically near $h^*$, which can cause optimization to stall.
-The absolute error and Stationary REINFORCE estimators have implied losses that are approximately $V$-shaped near $h^*$, with gradients that remain bounded away from zero, leading to sharper convergence near the constraint, but with significant bias (especially for small $h^*$)
-Batch size $M=32$ is used to ensure the Stationary REINFORCE formula is valid across all $h^*$ values shown.
+The absolute error and Stationary REINFORCE estimators have implied losses that are approximately $V$-shaped near $h^*$, with gradients that remain bounded away from zero, leading to sharper convergence near the constraint, but with significant bias (especially for small $h^*$).
+Each batch-size-dependent estimator is shown for two batch sizes: $M=8$ (solid) and $M=64$ (dotted); the squared error estimator does not depend on batch size and is shown once.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{./sr_analysis.pdf}
     \caption{%
         \textbf{Expected update direction and implied loss for three estimators on the Bernoulli model.}
-        Top: $\mathbb{E}_p[\hat{U}]$ vs.\ model parameter $p$ for target values $h^* \in \{0.1, 0.3, 0.5, 0.9\}$ and batch size $M=32$.
-        Bottom: implied loss $V(p) = \int_0^p \mathbb{E}_q[\hat{U}]\,/\,(q(1-q))\,\mathrm{d}q$, shifted so $V(h^*)=0$.
-        The dashed red line marks $p = h^*$.
+        Top: $\mathbb{E}_p[-\hat{U}]$ vs.\ model parameter $p$ for target values $h^* \in \{0.01, 0.1, 0.3\}$.
+        Bottom: implied loss $V(p) = \int_0^p \mathbb{E}_q[-\hat{U}]\,/\,(q(1-q))\,\mathrm{d}q$, shifted so $V(h^*)=0$.
+        The vertical gray line marks $p = h^*$.
+        Absolute error and Stationary REINFORCE are shown for $M=8$ (solid) and $M=64$ (dotted); squared error is batch-size independent.
         The Stationary REINFORCE and absolute error estimators maintain larger gradients near $h^*$ compared to the squared error baseline.
     }
     \label{fig:implied_loss}

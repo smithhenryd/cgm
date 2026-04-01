@@ -382,11 +382,6 @@ def _compute_sr_weights(hstar_val: float, batch_size: int) -> tuple[float, float
       w(1) =  h*     * w1_factor / D,   D = 2*alpha*(h* - beta)
     where  w0_factor = h* - 2*alpha*beta       (> 0 always, since beta < h*)
            w1_factor = 2*alpha*(1-beta) - (1-h*)  (> 0 when M is not too large relative to 1/h*)
-
-    When w1_factor <= 0 the finite-M formula is invalid because it would give w(1) < 0,
-    making the update diverge. In this regime D, w0_factor, and w1_factor all vanish at
-    the same O(sigma) rate as M -> inf (CLT), so by L'Hopital the weights converge to
-    w(0) -> -(1-h*) and w(1) -> h*, which are returned as the fallback.
     """
     M = batch_size
     h = hstar_val
@@ -402,8 +397,7 @@ def _compute_sr_weights(hstar_val: float, batch_size: int) -> tuple[float, float
 
     mask = k_vals < (M * h)
     alpha = pmf[mask].sum().item()
-    if alpha < 1e-15:
-        return -(1.0 - h), h
+    assert alpha > 1e-15, "Unstable if alpha < 1e-15"
 
     beta = ((k_vals[mask] / M) * pmf[mask]).sum().item() / alpha
 
