@@ -32,3 +32,21 @@ python calibrate_genie2.py \
 ```
 This will save 1000 samples (as `.pdb` files) from the fine-tuned Genie2 model to the directory `genie_outputs`. 
 It will also save a checkpoint of the Genie model every 50 epochs to the directory `checkpoints`.
+
+# kCGM experiments
+Small modifications were made to `calibrate_genie2.py` for the kCGM paper to ensure a fair comparison between the two methods. The version used for the kCGM paper is `calibrate_genie2_for_kCGM_paper.py`.
+`calibrate_genie2_energy.py` contains the code for running kCGM for Genie 2 calibration.
+It can be run as follows:
+```bash
+python calibrate_genie2_energy.py \
+  --path cath_biotite_ss.csv \
+  --epochs 100 \
+  --root_dir /scratch/users/diamant/genie_self-025_test \
+  --wandb_project genie2_energy \
+  --lambd 1e-3 \
+  --seed 0 \
+  --batch_chunks 32 \
+  --max_sample_batch 64 \
+  --self_repulsion_weight 0.25 \
+  --kernel energy
+```
