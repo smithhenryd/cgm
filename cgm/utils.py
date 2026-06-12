@@ -11,7 +11,6 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 from torch import optim
-import cvxpy as cp
 
 from typing import Any, Optional, TextIO, Union
 
@@ -129,6 +128,8 @@ def solve_dual(
     number of moment constraints
     h_target: a shape (N) vector of moment constraints
     """
+    import cvxpy as cp
+
     device = H.device
     H = H.cpu().numpy()  # put everything on CPU for the dual solve
     h_target = h_target.cpu().numpy()
