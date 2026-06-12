@@ -82,7 +82,11 @@ python -m pytest tests
 ```
 
 # kernel Calibrating Generative Models (kCGM)
-https://github.com/user-attachments/assets/d9d6b6a1-2d24-4f85-bb5b-8aa9e30296fe
+<div align="center">
+  <img src="https://github.com/smithhenryd/cgm/blob/kCGM/figs/smiley_training_animation.gif?raw=true" width="600">
+  <br>
+  <em>Using kCGM to calibrate the G2PT small-molecule autoregressive model to match a target smiley-face distribution of molecular descriptors.</em>
+</div>
 
 Code for "Calibrating Generative Models to Feature Distributions with MMD Finetuning" by Nathaniel L. Diamant and Brian L. Trippe.
 We introduce kCGM, an extension of CGM that targets the distribution of features rather than only the feature mean.
