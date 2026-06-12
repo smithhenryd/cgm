@@ -1,6 +1,6 @@
 This repo contains two projects for finetuning generative models to match distribution level constraints.
 - [CGM](#calibrating-generative-models-cgm): control the mean of black-box features of samples from your model.
-- [kCGM](#kernel-calibrating-generative-models-kcgm): control the mean of black-box features of samples from your model.
+- [kCGM](#kernel-calibrating-generative-models-kcgm): control the distribution of black-box features of samples from your model.
 
 # Calibrating Generative Models (CGM)
 
@@ -82,7 +82,7 @@ python -m pytest tests
 ```
 
 # kernel Calibrating Generative Models (kCGM)
-<video src="https://github.com/smithhenryd/cgm/blob/main/figs/smiley_training_animation.mp4" width="600" controls autoplay loop muted></video>
+<video src="https://github.com/smithhenryd/cgm/blob/kCGM/figs/smiley_training_animation.mp4" width="600" controls autoplay loop muted></video>
 
 Code for "Calibrating Generative Models to Feature Distributions with MMD Finetuning" by Nathaniel L. Diamant and Brian L. Trippe.
 We introduce kCGM, an extension of CGM that targets the distribution of features rather than only the feature mean.
