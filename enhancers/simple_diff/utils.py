@@ -1,22 +1,13 @@
-import os
 import time
 import math
 import warnings
-from collections import defaultdict
-from functools import partial
 from dataclasses import is_dataclass
 from typing import Any
 
-import numpy as np
-from scipy.linalg import sqrtm
-from tqdm.contrib.concurrent import process_map
 import torch
-from torch import nn
 from torch import optim
 from torch.optim import Optimizer
-from pytorch_lightning.loggers import Logger
 from pytorch_lightning import LightningModule
-from pytorch_lightning.callbacks import ModelCheckpoint
 
 from torch.optim.lr_scheduler import _LRScheduler
 
@@ -25,39 +16,6 @@ def pick_precision() -> str:
     if torch.cuda.get_device_capability()[0] == 8:
         return "bf16-mixed"
     return "32"
-
-
-class InMemoryLogger(Logger):
-    """somewhat hacky way to use lightning to track metrics in memory for quick experiments"""
-
-    def __init__(self):
-        super().__init__()
-        self.metrics = defaultdict(list)
-        self.hps = None
-
-    def log_metrics(self, metrics: dict[str, float], step: int = None):
-        for metric, value in metrics.items():
-            self.metrics[metric].append(value)
-
-    @property
-    def name(self):
-        return "in_memory_logger"
-
-    def log_hyperparams(self, params: dict[str, float], **kwargs):
-        self.hps = params
-
-    @property
-    def version(self):
-        return "0.0"
-
-
-class Residual(nn.Module):
-    def __init__(self, module: nn.Module):
-        super().__init__()
-        self.module = module
-
-    def forward(self, x):
-        return x + self.module(x)
 
 
 def dataclass_get(obj: Any, key: str, default: Any) -> Any:
@@ -318,94 +276,3 @@ class LinearWarmupCosineAnnealingLR(_LRScheduler):
             )
             for base_lr in self.base_lrs
         ]
-
-
-def get_wasserstein_dist(embeds1: np.ndarray, embeds2: np.ndarray) -> float:
-    if (
-        np.isnan(embeds2).any()
-        or np.isnan(embeds1).any()
-        or len(embeds1) == 0
-        or len(embeds2) == 0
-    ):
-        return float("nan")
-    mu1, sigma1 = embeds1.mean(axis=0), np.cov(embeds1, rowvar=False)
-    mu2, sigma2 = embeds2.mean(axis=0), np.cov(embeds2, rowvar=False)
-    ssdiff = np.sum((mu1 - mu2) ** 2.0)
-    covmean = sqrtm(sigma1.dot(sigma2))
-    if np.iscomplexobj(covmean):
-        covmean = covmean.real
-    dist = ssdiff + np.trace(sigma1 + sigma2 - 2.0 * covmean)
-    return float(dist)
-
-
-def fast_kmer_freq_embedding(seq: np.ndarray, k: int = 5) -> np.ndarray:
-    """
-    Efficient k-mer frequency embedding using numpy vectorization.
-
-    Parameters:
-    seq: np.ndarray of shape (seq_length,), values [0,1,2,3]
-    k: k-mer size (default 5)
-
-    Returns:
-    embedding: np.ndarray of shape (4**k,)
-    """
-    assert seq.dtype in (np.uint8, np.int32, np.int64), "Sequence dtype must be integer"
-    assert seq.min() >= 0 and seq.max() <= 3, "Sequence values must be in [0,1,2,3]"
-
-    # Calculate powers of 4: [4^(k-1), ..., 4^0]
-    powers = 4 ** np.arange(k - 1, -1, -1, dtype=np.int64)
-
-    # Efficient rolling window view
-    windows = np.lib.stride_tricks.sliding_window_view(seq, window_shape=k)
-
-    # Convert each k-mer window into an index between 0 and 1023
-    kmer_indices = (windows * powers).sum(axis=1)
-
-    # Count k-mers using numpy's bincount
-    embedding = np.bincount(kmer_indices, minlength=4**k).astype(np.float32)
-
-    # Normalize frequencies
-    embedding /= embedding.sum()
-
-    return embedding
-
-
-def kmer_embeddings(seqs: np.ndarray, k: int = 5, n_jobs: int = 1) -> np.ndarray:
-    """
-    Efficient k-mer frequency embedding using numpy vectorization.
-
-    Parameters:
-    seqs: np.ndarray of shape (n_seqs, seq_length), values [0,1,2,3]"
-    k: k-mer size (default 5)
-    n_jobs: number of parallel jobs"
-    """
-    kmer_partial = partial(fast_kmer_freq_embedding, k=k)
-    return np.array(
-        process_map(
-            kmer_partial,
-            seqs,
-            max_workers=n_jobs,
-            chunksize=100,
-        )
-    )
-
-
-def leave_one_out_mean(x: torch.Tensor, dim: int = 0) -> torch.Tensor:
-    """
-    Compute the leave-one-out mean along a given dimension.
-
-    y[i] = mean of all x[j] for j != i
-
-    Args:
-        x: input tensor of shape (n, ...)
-        dim: dimension along which to leave one out (default 0)
-
-    Returns:
-        Tensor of same shape as x, where
-        out[i] = average of x over all indices != i along `dim`.
-    """
-    n = x.size(dim)
-    # Compute total sum along dim, keep dim so it broadcasts
-    total = x.sum(dim=dim, keepdim=True)
-    # Subtract each element, then divide by (n - 1)
-    return (total - x) / (n - 1)

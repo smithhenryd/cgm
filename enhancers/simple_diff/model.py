@@ -1,11 +1,7 @@
 from dataclasses import dataclass
-from typing import Optional
 
-import numpy as np
-from tqdm import tqdm
 import torch
 import torch.nn as nn
-from torch import distributions
 import torch.nn.functional as F
 
 from simple_diff.utils import BaseLightning
@@ -79,20 +75,3 @@ class CNNConditionalMDLM(BaseLightning):
         loss = batch_loss.mean() / x_t.size(1)
         self.smart_log("loss", loss, prefix)
         return loss
-
-    @torch.no_grad()
-    def sample(
-        self,
-        n: int,
-        seq_len: int,
-        cond: torch.Tensor | None = None,
-        **sample_kwargs,
-    ) -> torch.Tensor:
-        xT = torch.full((n, seq_len), self.mask_token, device=self.device)
-        if cond is not None:
-            mu_0_kwargs = {"cond": cond.to(self.device)}
-        else:
-            mu_0_kwargs = {}
-        return self.schedule.sample_gillespie(
-            xT, mu_0_model=self, mu_0_kwargs=mu_0_kwargs, **sample_kwargs
-        )

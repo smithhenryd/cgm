@@ -16,7 +16,7 @@ python train_deepmel2.py --batch-size 256 --epochs 1 --lr 5e-4 --checkpoint-dir 
 ```
 ## full command
 ```bash
-python train_deepmel2.py --batch-size 256 --epochs 1000 --lr 5e-4 --checkpoint-dir /scratch/users/diamant/enhancer_pretrain_2026-04-30_1k
+python train_deepmel2.py --batch-size 256 --epochs 1000 --lr 5e-4 --checkpoint-dir /scratch/users/diamant/enhancer_pretrain
 ```
 
 # alphagenome feature extraction preprocessing
