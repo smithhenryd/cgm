@@ -82,7 +82,11 @@ python -m pytest tests
 ```
 
 # kernel Calibrating Generative Models (kCGM)
-<video src="https://github.com/smithhenryd/cgm/blob/kCGM/figs/smiley_training_animation.mp4" width="600" controls autoplay loop muted></video>
+<div align="center">
+  <video src="https://raw.githubusercontent.com/smithhenryd/cgm/kCGM/figs/smiley_training_animation.mp4" width="600" controls autoplay loop muted></video>
+  <br>
+  <em>Aligning a small molecule generative model to a reference distribution over target features using kCGM.</em>
+</div>
 
 Code for "Calibrating Generative Models to Feature Distributions with MMD Finetuning" by Nathaniel L. Diamant and Brian L. Trippe.
 We introduce kCGM, an extension of CGM that targets the distribution of features rather than only the feature mean.
