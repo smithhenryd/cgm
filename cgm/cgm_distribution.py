@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Optional, Type, TypeVar, Literal
 
 import torch
-import torch.distributed as dist
 import torch.optim as optim
 from tqdm import tqdm
 
@@ -32,10 +31,6 @@ class PCATransform:
     def __call__(self, z: torch.Tensor) -> torch.Tensor:
         """Apply the transform: center, project, scale.  [..., d] -> [..., k]."""
         return ((z - self.mu) @ self.evecs) * self.scales
-
-    def wrap(self, h: Callable[..., torch.Tensor]) -> Callable[..., torch.Tensor]:
-        """Return a new callable that applies h then this transform."""
-        return lambda *args, **kwargs: self(h(*args, **kwargs))
 
 
 def fit_pca(
@@ -274,51 +269,6 @@ def auto_scale_kernel(
     return scale_kernel(kernel, scale), scale, estimate_value
 
 
-def _per_sample_mmd_coeff(
-    x: torch.Tensor,  # [n, d]
-    y: torch.Tensor,  # [m, d]
-    kernel: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
-    *,
-    use_u_stat: bool = True,
-    self_repulsion_weight: float = 1.0,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    # TODO: this may be deprecated for _mmd_calibration_terms, which computes LOO correctly
-    """
-    Per-sample REINFORCE coefficient for minimising a kernel discrepancy.
-
-    The score-function gradient of the weighted objective is:
-
-        ∇_θ MMD² = 2 · E_P[
-            (self_repulsion_weight · self(x) - cross(x)) · ∇ log p_θ(x)
-        ]
-
-    where cross(x) = E_Q[k(x, Y)] and self(x) = E_{X'~P}[k(x, X')].  The
-    factor of 2 on the self term comes from differentiating E_P[k(X, X')]:
-    both X and X' depend on θ, giving two identical REINFORCE terms.
-
-    Returns g_i = 2 · (self_repulsion_weight · self_i - cross_i) and the
-    corresponding self_i and cross_i for each sample x_i. The standard proper
-    MMD / energy-distance objective is recovered at self_repulsion_weight = 1.
-    The historical Genie2 estimator corresponds to self_repulsion_weight = 0.5.
-
-    Returns:
-        (g_i, self_i, cross_i), all with shape [n].
-    """
-    Kxy = kernel(x, y)  # [n, m]
-    Kxx = kernel(x, x)  # [n, n]
-    cross_i = Kxy.mean(dim=1)  # [n]
-    n = x.shape[0]
-    if use_u_stat and n > 1:
-        self_i = (Kxx.sum(dim=1) - Kxx.diag()) / (n - 1)
-    else:
-        self_i = Kxx.mean(dim=1)
-    return (
-        2.0 * (self_repulsion_weight * self_i - cross_i),
-        self_i,
-        cross_i,
-    )  # [n], [n], [n]
-
-
 @dataclass
 class MMDCalibrationTerms:
     coeff: torch.Tensor
@@ -427,12 +377,12 @@ def calibrate_mmd(
     Calibrate a generative model by minimizing MMD^2 (or energy distance) combined
     with a KL-to-base regularizer, in the same style as calibrate_relaxed.
 
-    The per-sample coefficient is computed by _per_sample_mmd_coeff with the given
-    kernel.  Pass energy_distance_kernel() for energy distance or rbf_mixture_kernel()
-    for MMD with a Gaussian kernel mixture.
+    The per-sample coefficient is computed from the given kernel. Pass
+    energy_distance_kernel() for energy distance or rbf_mixture_kernel() for
+    MMD with a Gaussian kernel mixture.
 
     Preprocessing (whitening, PCA) should be applied to h and hstar before calling;
-    see fit_pca() and PCATransform.wrap().
+    see fit_pca() and PCATransform.
 
     Arguments mirror calibrate_relaxed; hstar is *samples* from the target for h.
     self_repulsion_weight controls the coefficient on the model-model kernel

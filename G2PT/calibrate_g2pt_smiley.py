@@ -638,7 +638,6 @@ def main() -> None:
                 "lambd": args.lambd,
                 "loss_weighting": args.loss_weighting,
                 "seed": args.seed,
-                "kernel": "energy",
                 "lr": args.lr,
                 "self_repulsion_weight": args.self_repulsion_weight,
                 "cosine_schedule": args.cosine_schedule,

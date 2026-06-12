@@ -97,24 +97,6 @@ class G2PTModel(Model[G2PTSample]):
         mask = _up_to_eos_mask(labels, self.eog_id)
         return log_probs, mask
 
-    def exact_kl_to(
-        self,
-        base_model: "G2PTModel",
-        x: G2PTSample,
-        batch_idx: int = 0,
-        batch_chunks: int = 1,
-    ) -> torch.Tensor:
-        log_probs, mask = self._teacher_forced_log_probs(
-            x, batch_idx=batch_idx, batch_chunks=batch_chunks
-        )
-        base_log_probs, _ = base_model._teacher_forced_log_probs(
-            x, batch_idx=batch_idx, batch_chunks=batch_chunks
-        )
-        per_token_kl = (
-            log_probs.exp() * (log_probs - base_log_probs.to(log_probs.device))
-        ).sum(dim=-1)
-        return torch.where(mask, per_token_kl, 0.0).sum(dim=-1)
-
     def log_p(
         self,
         x: G2PTSample,

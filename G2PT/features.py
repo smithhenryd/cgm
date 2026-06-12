@@ -21,7 +21,6 @@ import fcd_torch
 from functools import partial
 from rdkit import Chem, RDConfig
 from rdkit.Chem import (
-    AllChem,
     Crippen,
     Descriptors,
     Lipinski,
@@ -30,7 +29,6 @@ from rdkit.Chem import (
     rdMolDescriptors,
 )
 from rdkit.Chem.Scaffolds import MurckoScaffold
-from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map, thread_map
 
 from rdkit import RDLogger
@@ -143,24 +141,6 @@ def morgan_features(
 # ---------------------------------------------------------------------------
 
 _FCD_DIM = 512
-RDKIT_DESCRIPTOR_COLUMNS = [
-    "MolWt",
-    "MolLogP",
-    "TPSA",
-    "NumRotatableBonds",
-]
-EMBEDDING_DESCRIPTOR_COLUMNS = [
-    "MolWt",
-    "MolLogP",
-    "TPSA",
-    "NumRotatableBonds",
-    "NumHAcceptors",
-    "NumHDonors",
-    "RingCount",
-    "NumAromaticRings",
-    "FractionCSP3",
-    "HeavyAtomCount",
-]
 KCGM_DESCRIPTOR_COLUMNS = [
     "MolWt",
     "MolLogP",
@@ -322,7 +302,7 @@ def _descriptor_rows(
     smiles_list: list[str | None],
     *,
     verbose: bool,
-    descriptor_columns: Sequence[str] = EMBEDDING_DESCRIPTOR_COLUMNS,
+    descriptor_columns: Sequence[str],
 ) -> list[tuple[bool, np.ndarray]]:
     descriptor_columns_tuple = tuple(descriptor_columns)
     kwargs = {
@@ -350,7 +330,7 @@ def fit_descriptor_standardization(
     smiles_list: Iterable[str | None],
     *,
     verbose: bool = False,
-    descriptor_columns: Sequence[str] = EMBEDDING_DESCRIPTOR_COLUMNS,
+    descriptor_columns: Sequence[str] = KCGM_DESCRIPTOR_COLUMNS,
 ) -> tuple[torch.Tensor, torch.Tensor, int]:
     """
     Fit mean/std for the descriptor embedding on valid molecules only.
@@ -376,29 +356,6 @@ def fit_descriptor_standardization(
     mu = valid_tensor.mean(dim=0)
     sigma = valid_tensor.std(dim=0, unbiased=False).clamp_min(1e-6)
     return mu, sigma, n_valid
-
-
-def standardized_descriptor_features(
-    smiles_list: list[str | None],
-    mu: torch.Tensor,
-    sigma: torch.Tensor,
-    *,
-    verbose: bool = False,
-    descriptor_columns: Sequence[str] = EMBEDDING_DESCRIPTOR_COLUMNS,
-) -> torch.Tensor:
-    """
-    Standardize descriptor embeddings. Invalid molecules remain all zeros.
-    """
-    rows = _descriptor_rows(
-        smiles_list,
-        verbose=verbose,
-        descriptor_columns=descriptor_columns,
-    )
-    out = torch.zeros((len(smiles_list), len(descriptor_columns)), dtype=torch.float32)
-    for i, (is_valid, values) in enumerate(rows):
-        if is_valid:
-            out[i] = (torch.from_numpy(values) - mu) / sigma
-    return out
 
 
 def fit_descriptor_scaling(
@@ -513,136 +470,3 @@ def load_moses_split_smiles(
         downloaded.rename(csv_path)
 
     return pd.read_csv(csv_path)["SMILES"].tolist()
-
-
-def precompute_moses_features(
-    cache_dir: str | Path,
-    split: str,
-    n_bits: int = 256,
-    fcd_device: str = "cpu",
-) -> dict[str, torch.Tensor]:
-    """
-    Download one MOSES split CSV (if not cached), compute Morgan FP and ChemNet
-    features for all molecules, and save to cache_dir/{split}_features.pt.
-    On subsequent calls the cached file is loaded directly.
-
-    Bypasses MOSESDataset graph processing entirely — only the raw CSV is needed.
-
-    Args:
-        cache_dir:    Root directory for data and feature cache.
-        split:       One of {'train', 'val', 'test'}.
-        n_bits:      Morgan fingerprint length.
-        fcd_device:  Device for ChemNet model ('cpu' or 'cuda').
-
-    Returns:
-        dict with keys 'morgan' ([M, n_bits]) and 'fcd' ([M, 512]).
-    """
-    if split not in _MOSES_SPLIT_URLS:
-        raise ValueError(f"Unknown MOSES split: {split}")
-
-    cache_dir = Path(cache_dir)
-    save_path = cache_dir / f"{split}_features.pt"
-
-    if save_path.exists():
-        print(f"Loading cached {split} features from {save_path}")
-        return torch.load(save_path, weights_only=True)
-
-    smiles_list = load_moses_split_smiles(cache_dir, split)
-    print(f"Computing features for {len(smiles_list)} {split} molecules...")
-
-    morgan = morgan_features(smiles_list, n_bits=n_bits)
-    print(f"  Morgan FP done: {morgan.shape}")
-
-    fcd_model = load_fcd_model(device=fcd_device)
-    fcd = fcd_features(smiles_list, fcd_model=fcd_model)
-    print(f"  ChemNet FCD done: {fcd.shape}")
-
-    result = {"morgan": morgan, "fcd": fcd}
-    torch.save(result, save_path)
-    print(f"Saved to {save_path}")
-    return result
-
-
-def precompute_val_features(
-    cache_dir: str | Path,
-    n_bits: int = 256,
-    fcd_device: str = "cpu",
-) -> dict[str, torch.Tensor]:
-    """Compatibility wrapper for callers that still want the val split."""
-    return precompute_moses_features(
-        cache_dir,
-        split="val",
-        n_bits=n_bits,
-        fcd_device=fcd_device,
-    )
-
-
-# ---------------------------------------------------------------------------
-# Pre-compute and cache target features from GuacaMol splits
-# ---------------------------------------------------------------------------
-
-_GUACAMOL_SPLIT_URLS = {
-    "train": "https://s3-eu-west-1.amazonaws.com/pfigshare-u-files/13612760/guacamol_v1_train.smiles",
-    "val": "https://s3-eu-west-1.amazonaws.com/pfigshare-u-files/13612766/guacamol_v1_valid.smiles",
-    "test": "https://s3-eu-west-1.amazonaws.com/pfigshare-u-files/13612757/guacamol_v1_test.smiles",
-}
-
-
-def load_guacamol_split_smiles(
-    cache_dir: str | Path,
-    split: str,
-) -> list[str]:
-    """Load raw SMILES for one GuacaMol split, downloading the .smiles file if needed."""
-    import urllib.request
-
-    if split not in _GUACAMOL_SPLIT_URLS:
-        raise ValueError(f"Unknown GuacaMol split: {split}")
-
-    cache_dir = Path(cache_dir)
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    smiles_path = cache_dir / f"guacamol_v1_{split}.smiles"
-    if not smiles_path.exists():
-        print(f"Downloading GuacaMol {split} SMILES...")
-        urllib.request.urlretrieve(_GUACAMOL_SPLIT_URLS[split], smiles_path)
-
-    with open(smiles_path) as f:
-        return [line.strip() for line in f if line.strip()]
-
-
-def precompute_guacamol_features(
-    cache_dir: str | Path,
-    split: str = "val",
-    n_bits: int = 256,
-    fcd_device: str = "cpu",
-) -> dict[str, torch.Tensor]:
-    """
-    Download one GuacaMol split (if not cached), compute Morgan FP and ChemNet
-    features, and save to cache_dir/guacamol_{split}_features.pt.
-
-    Returns:
-        dict with keys 'morgan' ([M, n_bits]) and 'fcd' ([M, 512]).
-    """
-    if split not in _GUACAMOL_SPLIT_URLS:
-        raise ValueError(f"Unknown GuacaMol split: {split}")
-
-    cache_dir = Path(cache_dir)
-    save_path = cache_dir / f"guacamol_{split}_features.pt"
-
-    if save_path.exists():
-        print(f"Loading cached GuacaMol {split} features from {save_path}")
-        return torch.load(save_path, weights_only=True)
-
-    smiles_list = load_guacamol_split_smiles(cache_dir, split)
-    print(f"Computing features for {len(smiles_list)} GuacaMol {split} molecules...")
-
-    morgan = morgan_features(smiles_list, n_bits=n_bits)
-    print(f"  Morgan FP done: {morgan.shape}")
-
-    fcd_model = load_fcd_model(device=fcd_device)
-    fcd = fcd_features(smiles_list, fcd_model=fcd_model)
-    print(f"  ChemNet FCD done: {fcd.shape}")
-
-    result = {"morgan": morgan, "fcd": fcd}
-    torch.save(result, save_path)
-    print(f"Saved to {save_path}")
-    return result
