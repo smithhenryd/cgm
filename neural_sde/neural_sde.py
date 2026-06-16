@@ -24,6 +24,25 @@ class SamplePath:
     ts: torch.Tensor
 
 
+def combine_sample_paths(paths: list[SamplePath]) -> SamplePath:
+    """
+    Concatenate sample-path batches that share the same time grid.
+    """
+    if not paths:
+        raise ValueError("combine_sample_paths requires at least one sample path.")
+
+    ts = paths[0].ts
+    for path in paths[1:]:
+        if path.ts.shape != ts.shape or not torch.equal(path.ts, ts):
+            raise ValueError("All sample paths must share the same time grid.")
+
+    return SamplePath(
+        xs=torch.cat([path.xs for path in paths], dim=0),
+        zs=torch.cat([path.zs for path in paths], dim=0),
+        ts=ts,
+    )
+
+
 class NeuralSDE(Model[SamplePath]):
 
     def __init__(
@@ -33,33 +52,50 @@ class NeuralSDE(Model[SamplePath]):
         diffusion: Callable[[torch.Tensor], torch.Tensor],
         t_grid: torch.Tensor,
         initial_dist: Optional[Callable[[int], torch.Tensor]] = None,
+        max_sample_batch: int | None = None,
     ) -> None:
 
         super().__init__()
+        if max_sample_batch is not None and max_sample_batch < 1:
+            raise ValueError(
+                f"max_sample_batch must be positive or None, got {max_sample_batch}."
+            )
         self.sde_dim = sde_dim
         self.drift = drift
         self.diffusion = diffusion
         self.t_grid = t_grid
+        self.max_sample_batch = max_sample_batch
         self.sample_x0 = (
             initial_dist
             if (initial_dist is not None)
             else (
                 lambda N: torch.normal(
-                    torch.zeros((N, self.sde_dim), device=self.drift.device), 1.0
+                    torch.zeros((N, self.sde_dim), device=self.device), 1.0
                 )
             )
         )
 
     def sample(self, N: int) -> SamplePath:
+        if self.max_sample_batch is None or N <= self.max_sample_batch:
+            return self._sample_once(N)
+
+        sample_paths = []
+        n_chunks = (N + self.max_sample_batch - 1) // self.max_sample_batch
+        for i in range(n_chunks):
+            min_idx, max_idx = chunk_bounds(N, n_chunks, i)
+            sample_paths.append(self._sample_once(max_idx - min_idx))
+        return combine_sample_paths(sample_paths)
+
+    def _sample_once(self, N: int) -> SamplePath:
 
         # First draw samples from the initial distribution
         x0 = self.sample_x0(N)
 
         xt = x0
         Nsteps = self.t_grid.shape[0] - 1
-        xts = torch.zeros((N, Nsteps + 1, self.sde_dim), device=self.drift.device)
+        xts = torch.zeros((N, Nsteps + 1, self.sde_dim), device=self.device)
         xts[:, 0] = xt
-        zs = torch.zeros((N, Nsteps, self.sde_dim), device=self.drift.device)
+        zs = torch.zeros((N, Nsteps, self.sde_dim), device=self.device)
         for i in range(Nsteps):
             del_t = self.t_grid[i + 1] - self.t_grid[i]
 
@@ -70,7 +106,7 @@ class NeuralSDE(Model[SamplePath]):
             # Euler-Maruyama update, storing the noise
             noise_std = torch.sqrt(del_t) * diffusion_term
             noise = noise_std[:, None] * torch.normal(
-                0, 1.0, size=xt.shape, device=self.drift.device
+                0, 1.0, size=xt.shape, device=self.device
             )
 
             xt = xt + del_t * drift_term + noise

@@ -1,3 +1,7 @@
+This repo contains two projects for finetuning generative models to match distribution level constraints.
+- [CGM](#calibrating-generative-models-cgm): control the mean of black-box features of samples from your model.
+- [kCGM](#kernel-calibrating-generative-models-kcgm): control the distribution of black-box features of samples from your model.
+
 # Calibrating Generative Models (CGM)
 
 Code for "Calibrating Generative Models" by Henry D. Smith, Nathaniel L. Diamant, and Brian L. Trippe
@@ -76,3 +80,22 @@ Then run
 ```
 python -m pytest tests
 ```
+
+# kernel Calibrating Generative Models (kCGM)
+Code for "Calibrating Generative Models to Feature Distributions with MMD Finetuning" by Nathaniel L. Diamant and Brian L. Trippe.
+We introduce kCGM, an extension of CGM that targets the distribution of features rather than only the feature mean.
+The central kCGM code can be found in [cgm_distribution.py](cgm/cgm_distribution.py) with experiments in subfolders listed below.
+
+[Preprint coming soon](https://arxiv.org/)
+
+<div align="center">
+  <img src="https://github.com/smithhenryd/cgm/blob/kCGM/figs/smiley_training_animation.gif?raw=true" width="600">
+  <br>
+  <em>Using kCGM to calibrate the G2PT small-molecule autoregressive model to match a target smiley-face distribution of molecular descriptors.</em>
+</div>
+
+
+## Experiments from the paper
+- [Antibiotics feature distribution matching](./G2PT/)
+- [Increasing protein structure diversity](./genie2/)
+- [Generating DNA with realistic cell-type-specific activity profiles](./enhancers/)

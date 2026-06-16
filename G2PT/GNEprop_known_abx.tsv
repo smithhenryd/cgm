@@ -1,0 +1,202 @@
+	Name	SMILES	Target
+0	Actinomycin D	Cc1c2oc3c(C)ccc(C(=O)N[C@@H]4C(=O)N[C@H](C(C)C)C(=O)N5CCC[C@H]5C(=O)N(C)CC(=O)N(C)[C@@H](C(C)C)C(=O)O[C@@H]4C)c3nc-2c(C(=O)N[C@@H]2C(=O)N[C@H](C(C)C)C(=O)N3CCC[C@H]3C(=O)N(C)CC(=O)N(C)[C@@H](C(C)C)C(=O)O[C@@H]2C)c(N)c1=O	DNA/RNA synthesis
+1	Alafosfalin	C[C@H](N)C(=O)N[C@@H](C)P(=O)(O)O	Alanine racimase
+2	Amikacin	NCC[C@H](O)C(=O)N[C@@H]1C[C@H](N)[C@@H](O[C@H]2O[C@H](CN)[C@@H](O)[C@H](O)[C@H]2O)[C@H](O)[C@H]1O[C@H]1O[C@H](CO)[C@@H](O)[C@H](N)[C@H]1O	Ribosome (30S)
+3	Amoxicillin	CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](N)c3ccc(O)cc3)C(=O)N2[C@H]1C(=O)O	PBPs
+4	Ampicillin	CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](N)c3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+5	Arbekacin	NCC[C@H](O)C(=O)N[C@@H]1C[C@H](N)[C@@H](O[C@H]2O[C@H](CN)CC[C@H]2N)[C@@H](O)[C@H]1O[C@H]1O[C@H](CO)[C@@H](O)[C@H](N)[C@H]1O	Ribosome (30S)
+6	Arylomycin (potent)	Cc1nc(-c2ccc(C(C)(C)C)cc2)ncc1C(=O)N[C@@H](CCN)C(=O)N(C)[C@@H]1C(=O)N[C@@H](C)C(=O)N[C@H](C(=O)NCC#N)Cc2ccc(OCCN)c(c2)-c2cc1ccc2OCCN	SPase
+7	Arylomycin core	CC(=O)N(C)[C@@H]1C(=O)N[C@@H](C)C(=O)N[C@H](C(=O)O)Cc2ccc(O)c(c2)-c2cc1ccc2O	SPase
+8	Arylomycin+lipid tail	CCCCCCCCCCCCCCCC(=O)N(C)[C@H](CO)C(=O)N[C@H](C)C(=O)NCC(=O)N(C)[C@@H]1C(=O)N[C@@H](C)C(=O)N[C@H](C(=O)O)Cc2ccc(O)c(c2)-c2cc1ccc2O	SPase
+9	Azithromycin	CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(O)C[C@@H](C)CN(C)[C@H](C)[C@@H](O)[C@]1(C)O	Ribosome (50S)
+10	Azlocillin	CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](NC(=O)N3CCNC3=O)c3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+11	AZT (Zidovudine)	Cc1cn([C@H]2C[C@H](N=[N+]=[N-])[C@@H](CO)O2)c(=O)[nH]c1=O	DNA polymerase
+12	Aztreonam	C[C@H]1[C@H](NC(=O)/C(=N\OC(C)(C)C(=O)O)c2csc(N)n2)C(=O)N1S(=O)(=O)O	PBPs
+13	Bacitracin	CCC(C)C(N)NC1=NC(C(=O)N[C@@H](CC(C)C)C(=O)N[C@H](CCC(=O)O)C(=O)N[C@H](C(=O)N[C@H]2CCCCNC(=O)[C@H](CC(N)=O)NC(=O)[C@@H](CC(=O)O)NC(=O)[C@H](Cc3cnc[nH]3)NC(=O)[C@@H](Cc3ccccc3)NC(=O)[C@H](C(C)CC)NC(=O)[C@@H](CCCN)NC2=O)C(C)CC)CS1	C55-isoprenyl pyrophosphate
+14	Biapenem	CC(O)C1C(=O)N2C(C(=O)[O-])=C(SC3Cn4cnc[n+]4C3)C(C)C12	PBPs
+15	Borrelidin	C[C@@H]1C[C@H](C)C[C@H](C)[C@@H](O)CC(=O)O[C@H]([C@@H]2CCC[C@H]2C(=O)O)C/C=C/C=C(/C#N)[C@H](O)[C@@H](C)C1	ThrRS
+16	Carbenicillin	CC1(C)S[C@@H]2[C@H](NC(=O)C(C(=O)O)c3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+17	CCCP (Carbonyl cyanide 3-chlorophenylhydrazone)	N#CC(C#N)=NNc1cccc(Cl)c1	membrane proton gradient
+18	Cefaclor	N[C@@H](C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(Cl)CS[C@H]12)c1ccccc1	PBPs
+19	Cefadroxil	CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](N)c3ccc(O)cc3)[C@H]2SC1	PBPs
+20	Cefamandole	Cn1nnnc1SCC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](O)c3ccccc3)[C@H]2SC1	PBPs
+21	Cefazolin	Cc1nnc(SCC2=C(C(=O)O)N3C(=O)[C@@H](NC(=O)Cn4cnnn4)[C@H]3SC2)s1	PBPs
+22	Cefdinir	C=CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)/C(=N\O)c3csc(N)n3)[C@H]2SC1	PBPs
+23	Cefditoren	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(/C=C\c3scnc3C)CS[C@H]12)c1csc(N)n1	PBPs
+24	Cefepime	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)[O-])=C(C[N+]3(C)CCCC3)CS[C@H]12)c1csc(N)n1	PBPs
+25	Cefetamet	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(C)CS[C@H]12)c1csc(N)n1	PBPs
+26	Cefixime	C=CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)/C(=N\OCC(=O)O)c3csc(N)n3)[C@H]2SC1	PBPs
+27	Cefmetazole	CO[C@@]1(NC(=O)CSCC#N)C(=O)N2C(C(=O)O)=C(CSc3nnnn3C)CS[C@@H]21	PBPs
+28	Cefonicid	O=C(O)C1=C(CSc2nnnn2CS(=O)(=O)O)CS[C@@H]2[C@H](NC(=O)[C@H](O)c3ccccc3)C(=O)N12	PBPs
+29	Cefoperazone	CCN1CCN(C(=O)N[C@@H](C(=O)N[C@@H]2C(=O)N3C(C(=O)O)=C(CSc4nnnn4C)CS[C@H]23)c2ccc(O)cc2)C(=O)C1=O	PBPs
+30	Cefoperazone	CCN1CCN(C(=O)NC(C(=O)NC2C(=O)N3C(C(=O)O)=C(CSc4nnnn4C)CSC23)c2ccc(O)cc2)C(=O)C1=O	PBPs
+31	Cefotaxime	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(COC(C)=O)CS[C@H]12)c1csc(N)n1	PBPs
+32	Cefotetan	CO[C@@]1(NC(=O)C2SC(=C(C(N)=O)C(=O)O)S2)C(=O)N2C(C(=O)O)=C(CSc3nnnn3C)CS[C@@H]21	PBPs
+33	Cefoxitin	CO[C@@]1(NC(=O)Cc2cccs2)C(=O)N2C(C(=O)O)=C(COC(N)=O)CS[C@@H]21	PBPs
+34	Cefpirome	CON=C(C(=O)NC1C(=O)N2C(C(=O)[O-])=C(C[n+]3cccc4c3CCC4)CSC12)c1csc(N)n1	PBPs
+35	Cefpodoxime	COCC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)/C(=N\OC)c3csc(N)n3)[C@H]2SC1	PBPs
+36	Cefprozil	C/C=C/C1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](N)c3ccc(O)cc3)[C@H]2SC1	PBPs
+37	Cefsulodin	NC(=O)c1cc[n+](CC2=C(C(=O)[O-])N3C(=O)[C@@H](NC(=O)C(c4ccccc4)S(=O)(=O)O)[C@H]3SC2)cc1	PBPs
+38	Ceftaroline	CCO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)[O-])=C(Sc3nc(-c4cc[n+](C)cc4)cs3)CS[C@H]12)c1nsc(NP(=O)(O)O)n1	PBPs
+39	Ceftibuten	Nc1nc(/C(=C/CC(=O)O)C(=O)N[C@@H]2C(=O)N3C(C(=O)O)=CCS[C@H]23)cs1	PBPs
+40	Ceftizoxime	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=CCS[C@H]12)c1csc(N)n1	PBPs
+41	Ceftobiprole	Nc1nc(/C(=N\O)C(=O)N[C@@H]2C(=O)N3C(C(=O)O)=C(/C=C4\CCN([C@H]5CCNC5)C4=O)CS[C@H]23)ns1	PBPs
+42	Ceftobiprole	Nc1nc(/C(=N/O)C(=O)N[C@@H]2C(=O)N3C(C(=O)O)=C(/C=C4\CCN([C@@H]5CCNC5)C4=O)CS[C@H]23)ns1	PBPs
+43	Ceftriaxone	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(CSc3nc(=O)c(=O)[nH]n3C)CS[C@H]12)c1csc(N)n1	PBPs
+44	Cefuroxime	CO/N=C(/C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(COC(N)=O)CS[C@H]12)c1ccco1	PBPs
+45	Cephalexin	CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](N)c3ccccc3)[C@H]2SC1	PBPs
+46	Cephalexin	CC1=C(C(=O)O)N2C(=O)C(NC(=O)C(N)c3ccccc3)C2SC1	PBPs
+47	Cephalothin	CC(=O)OCC1=C(C(=O)O)N2C(=O)C(NC(=O)Cc3cccs3)C2SC1	PBPs
+48	Cephradine	CC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)[C@H](N)C3=CCC=CC3)[C@H]2SC1	PBPs
+49	Cephradine	CC1=C(C(=O)O)N2C(=O)C(NC(=O)C(N)C3=CCC=CC3)C2SC1	PBPs
+50	Cethromycin	CC[C@H]1OC(=O)[C@H](C)C(=O)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@@](C)(OC/C=C/c2cnc3ccccc3c2)C[C@@H](C)C(=O)[C@H](C)[C@H]2NC(=O)O[C@@]21C	
+51	CHIR-090	C[C@@H](O)[C@H](NC(=O)c1ccc(C#Cc2ccc(CN3CCOCC3)cc2)cc1)C(=O)NO	LpxC
+52	Chloramphenicol	O=C(N[C@H](CO)[C@H](O)c1ccc([N+](=O)[O-])cc1)C(Cl)Cl	Ribosome (50S)
+53	Chlorhexidine	N=C(NCCCCCCNC(=N)NC(=N)Nc1ccc(Cl)cc1)NC(=N)Nc1ccc(Cl)cc1	membrane
+54	Chlortetracyclinne	CN(C)[C@@H]1C(O)=C(C(N)=O)C(=O)[C@@]2(O)C(O)=C3C(=O)c4c(O)ccc(Cl)c4[C@@](C)(O)[C@H]3C[C@@H]12	Ribosome (30S)
+55	Ciprofloxacin	O=C(O)c1cn(C2CC2)c2cc(N3CCNCC3)c(F)cc2c1=O	Topo2; TopoIV
+56	Clarithromycin	CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(OC)C[C@@H](C)C(=O)[C@H](C)[C@@H](O)[C@]1(C)O	Ribosome (50S)
+57	Clavulanic acid	O=C(O)[C@H]1/C(=C/CO)O[C@@H]2CC(=O)N21	PBPs
+58	Clinafloxacin	NC1CCN(c2c(F)cc3c(=O)c(C(=O)O)cn(C4CC4)c3c2Cl)C1	Topo2; TopoIV
+59	Clindamycin	CCC[C@@H]1C[C@@H](C(=O)N[C@@H]([C@H]2O[C@H](SC)[C@H](O)[C@@H](O)[C@H]2O)[C@H](C)Cl)N(C)C1	Ribosome (50S)
+60	Cloxacillin	Cc1onc(-c2ccccc2Cl)c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+61	Colistin	CCC(C)CCCC(=O)N[C@@H](CCN)C(=O)N[C@H](C(=O)N[C@@H](CCN)C(=O)N[C@H]1CCNC(=O)[C@H]([C@@H](C)O)NC(=O)[C@H](CCN)NC(=O)[C@H](CCN)NC(=O)[C@H](CC(C)C)NC(=O)[C@@H](CC(C)C)NC(=O)[C@H](CCN)NC1=O)[C@@H](C)O	LPS Binder
+62	D-Cycloserine	N[C@@H]1CONC1=O	Alanine racimase; D-Ala-D-Ala ligase
+63	Dalbavancin	CN[C@H]1C(=O)N[C@@H]2Cc3ccc(cc3)Oc3cc4cc(c3O[C@@H]3O[C@H](C(=O)O)[C@@H](O)[C@H](O)[C@H]3NC(=O)CCCCCCCCC(C)C)Oc3ccc(cc3Cl)[C@@H](O)[C@@H]3NC(=O)[C@H](NC(=O)[C@@H]4NC(=O)[C@@H](NC2=O)c2cc(cc(O)c2Cl)Oc2ccc1cc2O)c1ccc(O)c(c1)-c1c(O[C@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]2O)cc(O)cc1[C@@H](C(=O)NCCCN(C)C)NC3=O	Lipid II
+64	Dalfopristin	CCN(CC)CCS(=O)(=O)[C@@H]1CCN2C(=O)c3coc(n3)CC(=O)C[C@H](O)/C=C(C)/C=C/CNC(=O)/C=C/[C@@H](C)[C@@H](C(C)C)OC(=O)[C@@H]12	
+65	Danofloxacin	CN1C[C@@H]2C[C@H]1CN2c1cc2c(cc1F)c(=O)c(C(=O)O)cn2C1CC1	Topo2; TopoIV
+66	Daptomycin	CCCCCCCCCC(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)N[C@H](CC(N)=O)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@@H]1C(=O)NCC(=O)N[C@@H](CCCN)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)NCC(=O)N[C@H](CO)C(=O)N[C@@H]([C@H](C)CC(=O)O)C(=O)N[C@@H](CC(=O)c2ccccc2N)C(=O)O[C@@H]1C	membrane
+67	Delafloxicin (ABT492)	Nc1nc(-n2cc(C(=O)O)c(=O)c3cc(F)c(N4CC(O)C4)c(Cl)c32)c(F)cc1F	Topo2; TopoIV
+68	Demeclocycline	CN(C)C1C(O)=C(C(N)=O)C(=O)[C@@]2(O)C(O)=C3C(=O)c4c(O)ccc(Cl)c4[C@@H](O)[C@H]3C[C@@H]12	Ribosome (30S)
+69	Dibekacin	NC[C@@H]1CC[C@@H](N)[C@@H](O[C@H]2[C@H](O)[C@@H](O[C@H]3O[C@H](CO)[C@@H](O)[C@H](N)[C@H]3O)[C@H](N)C[C@@H]2N)O1	Ribosome (30S)
+70	Dibekacin	NCC1CCC(N)C(OC2C(N)CC(N)C(OC3OC(CO)C(O)C(N)C3O)C2O)O1	Ribosome (30S)
+71	Dicloxacillin	Cc1onc(-c2c(Cl)cccc2Cl)c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+72	Difloxacin	CN1CCN(c2cc3c(cc2F)c(=O)c(C(=O)O)cn3-c2ccc(F)cc2)CC1	Topo2; TopoIV
+73	Dimethyl DNA31	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(=O)c(c5oc6cc(N7CCC(N(C)C)CC7)cc(O)c6nc-5c4c3C2=O)NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C	RNA Pol
+74	Dirithromycin	CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(O)C[C@@H](C)[C@@H]2N[C@@H](COCCOC)O[C@@H]([C@H]2C)[C@]1(C)O	Ribosome (50S)
+75	Doripenem	C[C@@H](O)[C@H]1C(=O)N2C(C(=O)O)=C(S[C@@H]3CN[C@H](CNS(N)(=O)=O)C3)[C@H](C)[C@H]12	PBPs
+76	Doxycycline hyclate	C[C@H]1c2cccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@@H]21	Ribosome (30S)
+77	Enoxacin	CCn1cc(C(=O)O)c(=O)c2cc(F)c(N3CCNCC3)nc21	Topo2; TopoIV
+78	Enrofloxacin	CCN1CCN(c2cc3c(cc2F)c(=O)c(C(=O)O)cn3C2CC2)CC1	Topo2; TopoIV
+79	Ertapenem	C[C@@H](O)[C@H]1C(=O)N2C(C(=O)O)=C(S[C@@H]3CN[C@H](C(=O)Nc4cccc(C(=O)O)c4)C3)[C@H](C)[C@H]12	PBPs
+80	Erythromycin	CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(O)C[C@@H](C)C(=O)[C@H](C)[C@@H](O)[C@]1(C)O	Ribosome (50S)
+81	Faropenem	C[C@@H](O)[C@H]1C(=O)N2C(C(=O)O)=C([C@H]3CCCO3)S[C@H]12	PBPs
+82	Finafloxacin	N#Cc1c(N2C[C@@H]3NCCO[C@H]3C2)c(F)cc2c(=O)c(C(=O)O)cn(C3CC3)c12	Topo2; TopoIV
+83	Fleroxacin	CN1CCN(c2c(F)cc3c(=O)c(C(=O)O)cn(CCF)c3c2F)CC1	Topo2; TopoIV
+84	Florfenicol	CS(=O)(=O)c1ccc([C@@H](O)[C@@H](CF)NC(=O)C(Cl)Cl)cc1	Ribosome (50S)
+85	Flucloxacillin	Cc1onc(-c2c(F)cccc2Cl)c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+86	Fosfomycin	C[C@@H]1O[C@@H]1P(=O)(O)O	MurA
+87	Fosmidomycin	O=CN(O)CCCP(=O)(O)O	DXP reductoisomerase
+88	Fusidic acid	CC(=O)O[C@H]1C[C@@]2(C)[C@@H](C[C@@H](O)[C@H]3[C@@]4(C)CC[C@@H](O)[C@@H](C)[C@@H]4CC[C@@]32C)/C1=C(\CCC=C(C)C)C(=O)O	Ribosome (50S)
+89	Garenoxacin	C[C@H]1NCc2cc(-c3ccc4c(=O)c(C(=O)O)cn(C5CC5)c4c3OC(F)F)ccc21	Topo2; TopoIV
+90	Gatifloxacin	COc1c(N2CCNC(C)C2)c(F)cc2c(=O)c(C(=O)O)cn(C3CC3)c12	Topo2; TopoIV
+91	gemifloxacin	CO/N=C1\CN(c2nc3c(cc2F)c(=O)c(C(=O)O)cn3C2CC2)CC1CN	Topo2; TopoIV
+92	Gentamicin	CNC(C)[C@@H]1CC[C@@H](N)[C@@H](O[C@H]2[C@H](O)[C@@H](O[C@H]3OC[C@](C)(O)[C@H](NC)[C@H]3O)[C@H](N)C[C@@H]2N)O1	Ribosome (30S)
+93	Gramicidin D	CC(C)C[C@@H](NC(=O)[C@H](C)NC(=O)CNC(=O)[C@@H](NC=O)C(C)C)C(=O)N[C@@H](C)C(=O)N[C@@H](C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)N[C@H](CC(C)C)C(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)N[C@H](CC(C)C)C(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)N[C@H](CC(C)C)C(=O)N[C@@H](Cc1c[nH]c2ccccc12)C(=O)NCCO)C(C)C)C(C)C)C(C)C	membrane
+94	Gramicidin S	CC(C)C[C@@H]1NC(=O)[C@H](CCCN)NC(=O)[C@H](C(C)C)NC(=O)[C@@H]2CCCN2C(=O)[C@@H](Cc2ccccc2)NC(=O)[C@H](CC(C)C)NC(=O)[C@H](CCCN)NC(=O)[C@H](C(C)C)NC(=O)[C@@H]2CCCN2C(=O)[C@@H](Cc2ccccc2)NC1=O	membrane
+95	Grepafloxacin	Cc1c(F)c(N2CCNC(C)C2)cc2c1c(=O)c(C(=O)O)cn2C1CC1	Topo2; TopoIV
+96	Iclaprim	COc1cc(Cc2cnc(N)nc2N)c2c(c1OC)OC(C1CC1)C=C2	DHFP
+97	Imipenem	C[C@@H](O)[C@H]1C(=O)N2C(C(=O)O)=C(SCC/N=C/N)C[C@H]12	PBPs
+98	Isepamicin	CN[C@@H]1[C@@H](O)[C@@H](O[C@@H]2[C@@H](O)[C@H](O[C@H]3O[C@H](CN)[C@@H](O)[C@H](O)[C@H]3O)[C@@H](N)C[C@H]2NC(=O)[C@@H](O)CN)OC[C@]1(C)O	Ribosome (30S)
+99	Kanamycin A	NC[C@H]1O[C@H](O[C@H]2[C@H](O)[C@@H](O[C@H]3O[C@H](CO)[C@@H](O)[C@H](N)[C@H]3O)[C@H](N)C[C@@H]2N)[C@H](O)[C@@H](O)[C@@H]1O	Ribosome (30S)
+100	Levofloxacin	C[C@H]1COc2c(N3CCN(C)CC3)c(F)cc3c(=O)c(C(=O)O)cn1c23	Topo2; TopoIV
+101	Lincomycin	CCC[C@@H]1C[C@@H](C(=O)N[C@@H]([C@H]2O[C@H](SC)[C@H](O)[C@@H](O)[C@H]2O)[C@@H](C)O)N(C)C1	Ribosome (50S)
+102	Linezolid	CC(=O)NC[C@H]1CN(c2ccc(N3CCOCC3)c(F)c2)C(=O)O1	Ribosome (50S)
+103	Lomefloxacin	CCn1cc(C(=O)O)c(=O)c2cc(F)c(N3CCNC(C)C3)c(F)c21	Topo2; TopoIV
+104	Loracarbef	N[C@@H](C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(Cl)CC[C@H]12)c1ccccc1	PBPs
+105	Mecillinam	CC1(C)S[C@@H]2[C@H](N=CN3CCCCCC3)C(=O)N2[C@H]1C(=O)O	PBPs
+106	Meclocycline	C=C1c2c(Cl)ccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@H]12	Ribosome (30S)
+107	Meropenem	C[C@@H](O)[C@H]1C(=O)N2C(C(=O)O)=C(S[C@@H]3CN[C@H](C(=O)N(C)C)C3)[C@H](C)[C@H]12	PBPs
+108	Methacycline	C=C1c2cccc(O)c2C(=O)C2=C(O)[C@]3(O)C(=O)C(C(N)=O)=C(O)[C@@H](N(C)C)[C@@H]3[C@@H](O)[C@H]12	Ribosome (30S)
+109	Methicillin	COc1cccc(OC)c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+110	Metronidazole	Cc1ncc([N+](=O)[O-])n1CCO	redox-DNA damage
+111	Mezlocillin	CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](NC(=O)N3CCN(S(C)(=O)=O)C3=O)c3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+112	Minocycline	CN(C)c1ccc(O)c2c1C[C@H]1C[C@H]3[C@H](N(C)C)C(O)=C(C(N)=O)C(=O)[C@@]3(O)C(O)=C1C2=O	Ribosome (30S)
+113	Moenomycin	C=C(CC=C(C)CCC=C(C)C)CCC(C)(C)C=CCCC(C)=CCOC(COP(=O)(O)OC1OC(C(=O)O)C(C)(O)C(OC(N)=O)C1OC1OC(COC2OC(CO)C(O)C(O)C2O)C(OC2OC(C)C(OC3OC(C(=O)NC4C(=O)CCC4=O)C(O)C(O)C3O)C(O)C2NC(C)=O)C(O)C1NC(C)=O)C(=O)O	Transglycosylase
+114	Moxalactam	CO[C@@]1(NC(=O)[C@H](C(=O)O)c2ccc(O)cc2)C(=O)N2C(C(=O)O)=C(CSc3nnnn3C)CO[C@@H]21	PBPs
+115	Moxalactam	CO[C@@]1(NC(=O)C(C(=O)O)c2ccc(O)cc2)C(=O)N2C(C(=O)O)=C(CSc3nnnn3C)CO[C@@H]21	PBPs
+116	Moxifloxacin	COc1c(N2C[C@@H]3CCCN[C@@H]3C2)c(F)cc2c(=O)c(C(=O)O)cn(C3CC3)c12	Topo2; TopoIV
+117	Mupirocin	C/C(=C\C(=O)OCCCCCCCCC(=O)O)C[C@@H]1OC[C@H](C[C@@H]2O[C@H]2[C@@H](C)[C@H](C)O)[C@@H](O)[C@H]1O	Ile tRNA synthetase
+118	Mureidomycin D*	CSCC[C@H](N)C(=O)C[C@H]([C@@H](N)C(=O)N(/C=C1\C[C@@H](O)[C@@H](N2CCC(=O)NC2=O)O1)C(=O)N[C@@H](Cc1cccc(O)c1)C(=O)O)N(C)C(=O)[C@H](Cc1cccc(O)c1)NC(=O)CN	MraY
+119	Nadifloxacin	CC1CCc2c(N3CCC(O)CC3)c(F)cc3c(=O)c(C(=O)O)cn1c23	Topo2; TopoIV
+120	Nafcillin	CCOc1ccc2ccccc2c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+121	Nalidixic acid	CCn1cc(C(=O)O)c(=O)c2ccc(C)nc21	Topo2; TopoIV
+122	Neomycin	NC[C@@H]1O[C@H](O[C@H]2[C@@H](O)[C@H](O[C@@H]3[C@@H](O)[C@H](N)C[C@H](N)[C@H]3O[C@H]3O[C@H](CN)[C@@H](O)[C@H](O)[C@H]3N)O[C@@H]2CO)[C@H](N)[C@@H](O)[C@@H]1O	Ribosome (30S)
+123	Netilmicin	CCN[C@@H]1C[C@H](N)[C@@H](OC2OC(CN)=CCC2N)[C@H](O)[C@H]1O[C@H]1OC[C@](C)(O)[C@H](NC)[C@H]1O	Ribosome (30S)
+124	Nitrofurantoin	O=C1CN(/N=C/c2ccc([N+](=O)[O-])o2)C(=O)N1	redox-DNA damage
+125	Norfloxacin	CCn1cc(C(=O)O)c(=O)c2cc(F)c(N3CCNCC3)cc21	Topo2; TopoIV
+126	Novobiocin	CO[C@@H]1[C@@H](OC(N)=O)[C@@H](O)[C@H](Oc2ccc3c(O)c(NC(=O)c4ccc(O)c(CC=C(C)C)c4)c(=O)oc3c2C)OC1(C)C	Topo 2 (GyrB)
+127	Ofloxacin	CC1COc2c(N3CCN(C)CC3)c(F)cc3c(=O)c(C(=O)O)cn1c23	Topo2; TopoIV
+128	Oxacillin	Cc1onc(-c2ccccc2)c1C(=O)N[C@@H]1C(=O)N2[C@@H]1SC(C)(C)[C@@H]2C(=O)O	PBPs
+129	Oxytetracycline	CN(C)[C@@H]1C(O)=C(C(N)=O)C(=O)[C@@]2(O)C(O)=C3C(=O)c4c(O)cccc4[C@@](C)(O)[C@H]3[C@H](O)[C@@H]12	Ribosome (30S)
+130	Paromomycin	NC[C@@H]1O[C@H](O[C@H]2[C@@H](O)[C@H](O[C@@H]3[C@@H](O)[C@H](N)C[C@H](N)[C@H]3O[C@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@H]3N)O[C@@H]2CO)[C@H](N)[C@@H](O)[C@@H]1O	Ribosome (30S)
+131	Paromomycin	NCC1OC(OC2C(CO)OC(OC3C(O)C(N)CC(N)C3OC3OC(CO)C(O)C(O)C3N)C2O)C(N)C(O)C1O	Ribosome (30S)
+132	Pefloxacin	CCn1cc(C(=O)O)c(=O)c2cc(F)c(N3CCN(C)CC3)cc21	Topo2; TopoIV
+133	Penicillin G	CC1(C)S[C@@H]2[C@H](NC(=O)Cc3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+134	Penicillin V	CC1(C)S[C@@H]2[C@H](NC(=O)COc3ccccc3)C(=O)N2[C@H]1C(=O)O	PBPs
+135	Piperacillin	CCN1CCN(C(=O)N[C@@H](C(=O)N[C@@H]2C(=O)N3[C@@H]2SC(C)(C)[C@@H]3C(=O)O)c2ccccc2)C(=O)C1=O	PBPs
+136	Polymyxin B	CCC(C)CCCCC(=O)N[C@@H](CCN)C(=O)N[C@H]1CCNC(=O)[C@H]([C@@H](C)O)NC(=O)[C@H](CCN)NC(=O)[C@H](CCN)NC(=O)[C@H](CC(C)C)NC(=O)[C@@H](Cc2ccccc2)NC(=O)[C@H](CCN)NC1=O	LPS Binder
+137	Polymyxin B nonapeptide	CC(C)C[C@@H]1NC(=O)[C@@H](Cc2ccccc2)NC(=O)[C@H](CCN)NC(=O)[C@@H](NC(=O)[C@H](CCN)NC(=O)[C@@H](N)[C@@H](C)O)CCNC(=O)[C@H]([C@@H](C)O)NC(=O)[C@H](CCN)NC(=O)[C@H](CCN)NC1=O	LPS Binder
+138	Prulifloxacin	Cc1oc(=O)oc1CN1CCN(c2cc3c(cc2F)c(=O)c(C(=O)O)c2n3C(C)S2)CC1	Topo2; TopoIV
+139	Quinupristin	CC[C@H]1NC(=O)[C@@H](NC(=O)c2ncccc2O)[C@@H](C)OC(=O)[C@H](c2ccccc2)NC(=O)[C@@H]2CC(=O)[C@H](CS[C@@H]3CN4CCC3CC4)CN2C(=O)[C@H](Cc2ccc(N(C)C)cc2)N(C)C(=O)[C@@H]2CCCN2C1=O	Ribosome (50S)
+140	Quinupristin;dalfopristin	CCN(CC)CCS(=O)(=O)[C@@H]1CCN2C(=O)c3coc(n3)CC(=O)C[C@H](O)/C=C(C)/C=C/CNC(=O)/C=C/[C@@H](C)[C@@H](C(C)C)OC(=O)[C@@H]12.CC[C@H]1NC(=O)[C@@H](NC(=O)c2ncccc2O)[C@@H](C)OC(=O)[C@H](c2ccccc2)NC(=O)[C@@H]2CC(=O)[C@H](CS[C@@H]3CN4CCC3CC4)CN2C(=O)[C@H](Cc2ccc(N(C)C)cc2)N(C)C(=O)[C@@H]2CCCN2C1=O	Ribosome (50S)
+141	Ramoplanin	CC(C)C/C=C/C=C\C(=O)N[C@@H](CC(N)=O)C(=O)N[C@@H]1C(=O)N[C@H](c2ccc(O)cc2)C(=O)N[C@H](CCCN)C(=O)N[C@H]([C@@H](C)O)C(=O)N[C@@H](c2ccc(O)cc2)C(=O)N[C@H](c2ccc(O)cc2)C(=O)N[C@@H]([C@H](C)O)C(=O)N[C@@H](Cc2ccccc2)C(=O)N[C@H](CCCN)C(=O)N[C@@H](c2ccc(O[C@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]3O[C@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]3O)cc2)C(=O)N[C@H]([C@@H](C)O)C(=O)N[C@@H](c2ccc(O)cc2)C(=O)NCC(=O)N[C@@H](CC(C)C)C(=O)N[C@H](C)C(=O)N[C@@H](c2ccc(O)c(Cl)c2)C(=O)O[C@@H]1C(N)=O	Transglycosylase
+142	Rifabutin	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(c3C2=O)C2=NC3(CCN(CC(C)C)CC3)NC2=C(NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C)C4=O	RNA Pol
+143	Rifampicin	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(O)c(c(/C=N/N5CCN(C)CC5)c(O)c4c3C2=O)NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C	RNA Pol
+144	Rifamycin S	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(c3C2=O)C(=O)C=C(NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C)C4=O	RNA Pol
+145	Rifamycin SV	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(O)c(cc(O)c4c3C2=O)NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C	RNA Pol
+146	Rifapentine	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(O)c(c(/C=N/N5CCN(C6CCCC6)CC5)c(O)c4c3C2=O)NC(=O)/C(C)=C\C=C\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C	RNA Pol
+147	Rifapentine	CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(O)c(c(/C=N/N5CCN(C6CCCC6)CC5)c(O)c4c3C2=O)NC(=O)/C(C)=C/C=C/[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C	RNA Pol
+148	Roxithromycin	CCC1OC(=O)C(C)C(OC2CC(C)(OC)C(O)C(C)O2)C(C)C(OC2OC(C)CC(N(C)C)C2O)C(C)(O)CC(C)C(=NOCOCCOC)C(C)C(O)C1(C)O	Ribosome (50S)
+149	Roxithromycin	CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(O)C[C@@H](C)/C(=N/OCOCCOC)[C@H](C)[C@@H](O)[C@]1(C)O	Ribosome (50S)
+150	RQX lactam	CO/N=C(\C(=O)N[C@@H]1C(=O)N2C(C(=O)O)=C(C[n+]3ccccc3)CS[C@H]12)c1nc(NC(=O)CCN)sc1Cl	PBPs
+151	Rufloxacin	CN1CCN(c2c(F)cc3c(=O)c(C(=O)O)cn4c3c2SCC4)CC1	Topo2; TopoIV
+152	Sitafloxacin	N[C@@H]1CN(c2c(F)cc3c(=O)c(C(=O)O)cn([C@@H]4C[C@@H]4F)c3c2Cl)CC12CC2	Topo2; TopoIV
+153	Sparfloxacin	CC1CN(c2c(F)c(N)c3c(=O)c(C(=O)O)cn(C4CC4)c3c2F)CC(C)N1	Topo2; TopoIV
+154	Sparfloxacin	C[C@@H]1CN(c2c(F)c(N)c3c(=O)c(C(=O)O)cn(C4CC4)c3c2F)C[C@H](C)N1	Topo2; TopoIV
+155	Spectinomycin	CN[C@@H]1[C@H](O)[C@H](NC)[C@H]2O[C@@]3(O)C(=O)C[C@@H](C)O[C@H]3O[C@@H]2[C@H]1O	Ribosome (30S)
+156	Streptomycin	CNC1C(OC2C(OC3C(O)C(O)C(N=C(N)N)C(O)C3N=C(N)N)OC(C)C2(O)C=O)OC(CO)C(O)C1O	Ribosome (30S)
+157	Streptothricin F	NCCC[C@H](N)CC(=O)N[C@@H]1[C@H](O)[C@@H](OC(N)=O)[C@@H](CO)O[C@H]1/N=C1\N[C@@H]2[C@H](O)CNC(=O)[C@H]2N1	
+158	Sulbactam	CC1(C)C(C(=O)O)N2C(=O)CC2S1(=O)=O	beta-lactamase
+159	Sulbactam	CC1(C)[C@H](C(=O)O)N2C(=O)C[C@H]2S1(=O)=O	beta-lactamase
+160	Sulfabenzamide	Nc1ccc(S(=O)(=O)NC(=O)c2ccccc2)cc1	DHPS
+161	Sulfacetamide	CC(=O)NS(=O)(=O)c1ccc(N)cc1	DHPS
+162	Sulfachlorpyridazine	Nc1ccc(S(=O)(=O)Nc2ccc(Cl)nn2)cc1	DHPS
+163	Sulfadiazine	Nc1ccc(S(=O)(=O)Nc2ncccn2)cc1	DHPS
+164	Sulfadimethoxine	COc1cc(NS(=O)(=O)c2ccc(N)cc2)nc(OC)n1	DHPS
+165	Sulfaguanidine	NC(N)=NS(=O)(=O)c1ccc(N)cc1	DHPS
+166	Sulfamerazine	Cc1ccnc(NS(=O)(=O)c2ccc(N)cc2)n1	DHPS
+167	Sulfameter	COc1cnc(NS(=O)(=O)c2ccc(N)cc2)nc1	DHPS
+168	Sulfamethazine	Cc1cc(C)nc(NS(=O)(=O)c2ccc(N)cc2)n1	DHPS
+169	Sulfamethizole	Cc1nnc(NS(=O)(=O)c2ccc(N)cc2)s1	DHPS
+170	Sulfamethoxazole	Cc1cc(NS(=O)(=O)c2ccc(N)cc2)no1	DHPS
+171	Sulfamethoxypyridazine	COc1ccc(NS(=O)(=O)c2ccc(N)cc2)nn1	DHPS
+172	Sulfamonomethoxine	COc1cc(NS(=O)(=O)c2ccc(N)cc2)ncn1	DHPS
+173	Sulfanitran	CC(=O)Nc1ccc(S(=O)(=O)Nc2ccc([N+](=O)[O-])cc2)cc1	DHPS
+174	Sulfaphenazole	Nc1ccc(S(=O)(=O)Nc2ccnn2-c2ccccc2)cc1	DHPS
+175	Sulfapyridine	Nc1ccc(S(=O)(=O)Nc2ccccn2)cc1	DHPS
+176	Sulfaquinoxaline	Nc1ccc(S(=O)(=O)[N-]c2cnc3ccccc3n2)cc1	DHPS
+177	Sulfaquinoxaline	Nc1ccc(S(=O)(=O)Nc2cnc3ccccc3n2)cc1	DHPS
+178	Sulfathiazole	Nc1ccc(S(=O)(=O)Nc2nccs2)cc1	DHPS
+179	Sulfisoxazole	Cc1noc(NS(=O)(=O)c2ccc(N)cc2)c1C	DHPS
+180	Tazobactam	C[C@]1(Cn2ccnn2)[C@H](C(=O)O)N2C(=O)C[C@H]2S1(=O)=O	PBPs
+181	Teicoplanin A2	CCCCCCCCCC(=O)N[C@H]1[C@H](O[C@@H]2c3ccc(c(Cl)c3)Oc3cc4cc(c3O[C@@H]3O[C@H](CO)[C@@H](O)[C@H](O)[C@H]3NC(C)=O)Oc3ccc(cc3Cl)C[C@H]3NC(=O)[C@H](N)c5ccc(O)c(c5)Oc5cc(O)cc(c5)[C@H](NC3=O)C(=O)N[C@H]4C(=O)N[C@H]3C(=O)N[C@@H]2C(=O)N[C@@H](C(=O)O)c2cc(O)cc(O[C@H]4O[C@H](CO)[C@@H](O)[C@H](O)[C@@H]4O)c2-c2cc3ccc2O)O[C@H](CO)[C@@H](O)[C@@H]1O	Lipid II
+182	Telavancin	CCCCCCCCCCNCCN[C@@]1(C)C[C@H](O[C@H]2[C@H](Oc3c4cc5cc3Oc3ccc(cc3Cl)[C@@H](O)[C@@H](NC(=O)[C@@H](CC(C)C)NC)C(=O)N[C@@H](CC(N)=O)C(=O)N[C@H]5C(=O)N[C@H]3C(=O)N[C@H](C(=O)N[C@H](C(=O)O)c5cc(O)c(CNCP(=O)(O)O)c(O)c5-c5cc3ccc5O)[C@H](O)c3ccc(c(Cl)c3)O4)O[C@H](CO)[C@@H](O)[C@@H]2O)O[C@@H](C)[C@H]1O	Lipid II
+183	Telithromycin	CC[C@H]1OC(=O)[C@H](C)C(=O)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(OC)C[C@@H](C)C(=O)[C@H](C)[C@H]2N(CCCCn3cnc(-c4cccnc4)c3)C(=O)O[C@]12C	Ribosome (50S)
+184	Temafloxacin	CC1CN(c2cc3c(cc2F)c(=O)c(C(=O)O)cn3-c2ccc(F)cc2F)CCN1	Topo2; TopoIV
+185	Tetracycline HCL	CN(C)[C@@H]1C(O)=C(C(N)=O)C(=O)[C@@]2(O)C(O)=C3C(=O)c4c(O)cccc4[C@@](C)(O)[C@H]3C[C@@H]12	Ribosome (30S)
+186	Thiamphenicol	CS(=O)(=O)c1ccc([C@@H](O)[C@@H](CO)NC(=O)C(Cl)Cl)cc1	Ribosome (50S)
+187	Thiostrepton	C=C(NC(=O)C(=C)NC(=O)c1csc(C2=NC3c4csc(n4)[C@H]4NC(=O)c5csc(n5)[C@H]([C@](C)(O)[C@@H](C)O)NC(=O)C5CSC(=N5)/C(=C/C)NC(=O)[C@H]([C@@H](C)O)NC(=O)c5csc(n5)[C@]3(CC2)NC(=O)[C@H](C)NC(=O)C(=C)NC(=O)[C@H](C)NC(=O)[C@H]([C@@H](C)CC)NC2C=Cc3c([C@H](C)O)cc(nc3[C@H]2O)C(=O)O[C@@H]4C)n1)C(N)=O	Ribosome (EF-G)
+188	Ticarcillin	CC1(C)S[C@@H]2[C@H](NC(=O)[C@H](C(=O)O)c3ccsc3)C(=O)N2[C@H]1C(=O)O	PBPs
+189	Ticarcillin	CC1(C)SC2C(NC(=O)C(C(=O)O)c3ccsc3)C(=O)N2C1C(=O)O	PBPs
+190	Tigecycline	CN(C)c1cc(NC(=O)CNC(C)(C)C)c(O)c2c1C[C@H]1C[C@H]3[C@H](N(C)C)C(O)=C(C(N)=O)C(=O)[C@@]3(O)C(O)=C1C2=O	Ribosome (30S)
+191	TMP-SXT (trimethoprim; sulfamethoxazole)	COc1cc(Cc2cnc(N)nc2N)cc(OC)c1OC.Cc1cc(NS(=O)(=O)c2ccc(N)cc2)no1	DHRF-DHPS
+192	Tobramycin	NC[C@H]1O[C@H](O[C@H]2[C@H](O)[C@@H](O[C@H]3O[C@H](CO)[C@@H](O)[C@H](N)[C@H]3O)[C@H](N)C[C@@H]2N)[C@H](N)C[C@@H]1O	Ribosome (30S)
+193	Tobramycin	NC[C@H]1O[C@H](O[C@H]2[C@@H](O)[C@@H](O[C@H]3O[C@@H](CO)[C@@H](O)[C@H](N)[C@@H]3O)[C@H](N)C[C@@H]2N)[C@H](N)C[C@@H]1O	Ribosome (30S)
+194	Triclocarban	O=C(Nc1ccc(Cl)cc1)Nc1ccc(Cl)c(Cl)c1	
+195	Triclosan	Oc1cc(Cl)ccc1Oc1ccc(Cl)cc1Cl	FabI
+196	Trimethoprim	COc1cc(Cc2cnc(N)nc2N)cc(OC)c1OC	DHFP
+197	Trovafloxacin	N[C@@H]1[C@H]2CN(c3nc4c(cc3F)c(=O)c(C(=O)O)cn4-c3ccc(F)cc3F)C[C@@H]12	Topo2; TopoIV
+198	Ulifloxacin	CC1Sc2c(C(=O)O)c(=O)c3cc(F)c(N4CCNCC4)cc3n21	Topo2; TopoIV
+199	unknown lactam	CC(=O)OCC1=C(C(=O)O)N2C(=O)[C@@H](NC(=O)Cc3ccccc3)[C@H]2SC1	PBPs
+200	Vancomycin	CN[C@H](CC(C)C)C(=O)N[C@H]1C(=O)N[C@@H](CC(N)=O)C(=O)N[C@H]2C(=O)N[C@H]3C(=O)N[C@H](C(=O)N[C@H](C(=O)O)c4cc(O)cc(O)c4-c4cc3ccc4O)[C@H](O)c3ccc(c(Cl)c3)Oc3cc2cc(c3O[C@@H]2O[C@H](CO)[C@@H](O)[C@H](O)[C@H]2O[C@H]2C[C@](C)(N)[C@H](O)[C@H](C)O2)Oc2ccc(cc2Cl)[C@H]1O	Lipid II
