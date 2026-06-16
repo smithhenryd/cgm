@@ -84,6 +84,7 @@ python -m pytest tests
 # kernel Calibrating Generative Models (kCGM)
 Code for "Calibrating Generative Models to Feature Distributions with MMD Finetuning" by Nathaniel L. Diamant and Brian L. Trippe.
 We introduce kCGM, an extension of CGM that targets the distribution of features rather than only the feature mean.
+The central kCGM code can be found in [cgm_distribution.py](cgm/cgm_distribution.py) with experiments in subfolders listed below.
 
 [Preprint coming soon](https://arxiv.org/)
 
