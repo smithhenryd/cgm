@@ -98,7 +98,9 @@ mmd_model = calibrate_mmd(
 )
 ```
 
-Here `hstar_samples` has shape `[num_target_samples, feature_dim]` and represents samples from the target feature distribution. The `kernel` argument defines which feature-distribution discrepancy is optimized; `energy_distance_kernel()`, `rbf_mixture_kernel()`, `dot_product_kernel`, and `tanimoto_kernel` are included in `cgm.cgm_distribution.py`, and you can pass any custom callable with signature `kernel(x, y) -> [x.shape[0], y.shape[0]]`.
+Here `hstar_samples` has shape `[num_target_samples, feature_dim]` and represents samples from the target feature distribution. The `kernel` argument defines which feature-distribution discrepancy is optimized.
+[kernels.py](cgm/kernels.py) implements the kernels we use in the kCGM paper, such as `energy_distance_kernel` and `tanimoto_kernel`.
+You can also pass any custom callable with signature `kernel(x, y) -> [x.shape[0], y.shape[0]]`.
 
 The `use_loo` argument in `calibrate_mmd` only controls the leave-one-out baseline for the MMD coefficient estimate. Unlike `use_loo` in `cgm.py`, it does not turn off the leave-one-out baseline for the KL-to-base term; the KL baseline is always used in `calibrate_mmd`.
 
