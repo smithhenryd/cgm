@@ -322,7 +322,7 @@ def calibrate_reward(
                 )
         ## Checkpoint the model
         if checkpoint_fn is not None:
-            checkpoint_fn(model, loss, optimizer, scheduler, epoch)
+            checkpoint_fn(model, loss_item, optimizer, scheduler, epoch)
 
     # RETURN THE CALIBRATED MODEL
     return model
@@ -484,7 +484,7 @@ def calibrate_forward_kl(
                 )
         ## Checkpoint the model
         if checkpoint_fn is not None:
-            checkpoint_fn(model, loss, optimizer, scheduler, epoch)
+            checkpoint_fn(model, loss_item, optimizer, scheduler, epoch)
 
     return model
 
