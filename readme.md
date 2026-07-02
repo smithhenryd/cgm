@@ -6,7 +6,7 @@ This repo contains code for finetuning generative models to match distribution-l
 
 This repository accompanies two manuscripts:
 - **Calibrating Generative Models to Distributional Constraints** by Henry D. Smith, Nathaniel L. Diamant, and Brian L. Trippe. [Preprint](https://arxiv.org/abs/2510.10020)
-- **Calibrating Generative Models to Feature Distributions with MMD Finetuning** by Nathaniel L. Diamant and Brian L. Trippe. [Preprint coming soon](https://arxiv.org/)
+- **Calibrating Generative Models to Feature Distributions with MMD Finetuning** by Nathaniel L. Diamant and Brian L. Trippe. [Preprint](https://arxiv.org/abs/2606.19496)
 
 We propose lightweight, general-purpose algorithms for fine-tuning generative models to match distribution-level constraints. **CGM-relax** and **CGM-reward** target constraints on feature means, while **kCGM** targets full feature distributions. These methods apply to diverse model classes, data, and constraint types, and use the same base model abstraction: a generative model that can draw samples and evaluate their log probabilities.
 
