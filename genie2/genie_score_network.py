@@ -6,6 +6,8 @@ import os
 from genie.sampler.unconditional import UnconditionalSampler
 from genie.utils.model_io import load_pretrained_model
 
+import secstruct
+
 
 def genie_denoiser(
     x: torch.tensor, t: int, genie_model: UnconditionalSampler
